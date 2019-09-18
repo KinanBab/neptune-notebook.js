@@ -1,0 +1,33 @@
+{
+  "name": "neptune-notebook.js",
+  "version": "1.0.0",
+  "description": "Interactive Notebook for Javascript and Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint -c .eslint.json ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KinanBab/neptune-notebook.js.git"
+  },
+  "keywords": [
+    "interactive",
+    "notebook",
+    "browser",
+    "nodejs"
+  ],
+  "author": "Kinan Dak Albab",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KinanBab/neptune-notebook.js/issues"
+  },
+  "homepage": "https://github.com/KinanBab/neptune-notebook.js#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.4.0",
+    "eslint-plugin-requirejs": "^4.0.0"
+  }
+}
