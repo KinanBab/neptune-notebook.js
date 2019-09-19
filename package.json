@@ -5,7 +5,10 @@
   "main": "src/neptune.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/.bin/eslint -c .eslint.json ."
+    "lint": "./node_modules/.bin/eslint -c .eslint.json .",
+    "build": "browserify src/statics/browserify/neptune.js --debug -o src/statics/neptune.js",
+    "preinstall": "sudo npm install browserify -g",
+    "postinstall": "npm run-script build"
   },
   "repository": {
     "type": "git",
