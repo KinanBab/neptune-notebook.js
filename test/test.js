@@ -1,5 +1,5 @@
-var neptune = require('../src/index.js');
+var Neptune = require('../src/neptune.js');
 
-var notebook = new neptune();
-notebook.renderDocument('test', __dirname + '/test.md');
-notebook.start();
+var neptune = new Neptune();
+neptune.renderDocument('test', __dirname + '/test.md', true);
+neptune.start();

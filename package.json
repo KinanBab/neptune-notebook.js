@@ -2,7 +2,7 @@
   "name": "neptune-notebook.js",
   "version": "1.0.0",
   "description": "Interactive Notebook for Javascript and Node.js",
-  "main": "index.js",
+  "main": "src/neptune.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint -c .eslint.json ."
@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/KinanBab/neptune-notebook.js#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nunjucks": "^3.2.0",
+    "showdown": "^1.9.0"
   },
   "devDependencies": {
     "eslint": "^6.4.0",
