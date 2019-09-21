@@ -23,7 +23,7 @@ running on. Second, since this is a multi-party computation, we need to tell the
 The `make_jiff` function uses this information to set up a new JIFF object.
 We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
 
-```javascript
+```neptune[title=Party&nbsp1]
 var jiff_instance;
 
 function connect() {
