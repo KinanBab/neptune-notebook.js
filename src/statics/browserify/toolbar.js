@@ -1,10 +1,12 @@
 const scopedEval = require('./eval.js');
+const serverExec = require('./serverExec.js');
 
 // handles clicking on an icon in the code toolbar
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-')[1];
   const codeTag = this.parentNode.parentNode.getElementsByTagName('code')[0];
   const textAreaTag = this.parentNode.parentNode.getElementsByTagName('textarea')[0];
+  const options = JSON.parse(codeTag.dataset.options);
 
   let range;
   switch (type) {
@@ -23,7 +25,11 @@ const toolbarClick = function () {
       break;
 
     case 'play':
-      scopedEval(codeTag);
+      if (options['env'] === 'server') {
+        serverExec(codeTag.textContent, options['scope']);
+      } else {
+        scopedEval(codeTag.textContent, options['scope']);
+      }
       break;
   }
 };

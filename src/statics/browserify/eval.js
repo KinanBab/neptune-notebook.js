@@ -3,34 +3,30 @@ const scopes = {};
 
 // creates the function without a closure (in global scope)
 // protects the scope of this file and other neptune files from interferance from inside eval
-new Function(
-  'eval("' +
+const $__eval__$ = new Function(
+  'return eval("' +
     // Quine for scoping evals
     // Simplified fiddle to help understand why this quine is useful: https://jsfiddle.net/kjvo6h2x/
-    'function $__eval__$($__code__$) {' +
+    'let $__eval__$;' +
+    '$__eval__$ = function $__eval__$($__code__$) {' +
       'eval($__code__$);' +
       'eval($__eval__$.toString());' +
       'return $__eval__$;' +
-    '}' +
-    // Expose Quine to all scripts
-    'window.$__eval__$ = $__eval__$;' +
+    '};' + // function is returned by this statement
   '");'
 )();
 
 // determine scope and eval within it!
-module.exports = function (codeTag) {
-  const options = JSON.parse(codeTag.dataset.options);
-
-  let scopeName = options['scope'];
+module.exports = function (code, scopeName) {
   if (scopeName == null) {
     scopeName = '$__DEFAULT__$';
   }
 
   // create empty scope if it does not exist
   if (scopes[scopeName] == null) {
-    scopes[scopeName] = window.$__eval__$;
+    scopes[scopeName] = $__eval__$;
   }
 
   // eval within scope
-  scopes[scopeName] = scopes[scopeName](codeTag.textContent);
+  scopes[scopeName] = scopes[scopeName](code);
 };
