@@ -15,17 +15,17 @@
   </head>
   <body>
     {{ contentHtml|safe }}
-    
+
+    <script type="text/javascript">
+      // prism.js
+      {{ prismJS|safe}}
+    </script>
     <script type="text/javascript">
       {% if isOffline %}
       window.$__offline__$ = true;
       {% endif %}
       // neptune.js
       {{ neptuneJS|safe}}
-    </script>
-    <script type="text/javascript">
-      // prism.js
-      {{ prismJS|safe}}
     </script>
   </body>
 </html>

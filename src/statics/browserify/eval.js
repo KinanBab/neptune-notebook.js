@@ -7,7 +7,7 @@ const $__eval__$ = new Function(
   'return eval("' +
     // Quine for scoping evals
     // Simplified fiddle to help understand why this quine is useful: https://jsfiddle.net/kjvo6h2x/
-    'let $__eval__$;' +
+    'var $__eval__$;' +
     '$__eval__$ = function $__eval__$($__code__$) {' +
       'eval($__code__$);' +
       'eval($__eval__$.toString());' +
@@ -16,8 +16,19 @@ const $__eval__$ = new Function(
   '");'
 )();
 
+const logMiddlewareBrowser = function (tabID) {
+  return 'var Console = document.getElementById(\''+tabID+'-output\').Console;';
+}
+
+const logMiddlewareServer = 'var Console = {};' +
+  'Console.log = function () {' +
+    'global.$__logs__$.push(arguments);' +
+  '};';
+
 // determine scope and eval within it!
-module.exports = function (code, scopeName) {
+module.exports = function (code, scopeName, tabID) {
+  code = (tabID ? logMiddlewareBrowser(tabID) : logMiddlewareServer) + code;
+
   if (scopeName == null) {
     scopeName = '$__DEFAULT__$';
   }

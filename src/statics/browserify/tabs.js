@@ -3,10 +3,11 @@
  */
 const Toolbar = require('./toolbar.js');
 const Editor = require('./editor.js');
+const OutputPanel = require('./outputPanel.js');
 
 let autoCounter = 0;
 
-const createTab = function (title, tabsContainer, preTag) {
+const createTab = function (title, tabsContainer, preTag, options) {
   const tabRadio = document.createElement('input');
   const tabLabel = document.createElement('label');
   const codeTab = document.createElement('div');
@@ -44,9 +45,10 @@ const createTab = function (title, tabsContainer, preTag) {
   // style container
   codeTab.classList.add('code-tab');
 
-  // add toolbar and <pre> tag
-  codeTab.appendChild(Toolbar());
+  // add toolbar and <pre> tag and output area
+  codeTab.appendChild(Toolbar(tabID));
   codeTab.appendChild(preTag);
+  codeTab.appendChild(OutputPanel(tabID, options));
 
   // add the code container to the tabs
   tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
@@ -85,7 +87,7 @@ module.exports = function (preTag, codeTag) {
   const tabsContainer = getOrCreateTabsContainer(frameID, preTag);
 
   // Add this <pre><code> tags as a tab to the container
-  createTab(title, tabsContainer, preTag);
+  createTab(title, tabsContainer, preTag, options);
 
   // add transparent text area that mimics the code tag
   preTag.appendChild(Editor(codeTag));

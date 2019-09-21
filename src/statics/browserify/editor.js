@@ -2,18 +2,18 @@
 
 // bind input to the textarea to the code tag
 const codeInputHandler = function (codeTag, textAreaTag) {
+  textAreaTag.scrollTop = 0;
   let code = textAreaTag.value;
-  if (code === '') { // avoid switching to a terminal!
-    code = ' ';
-  }
 
-  codeTag.innerHTML = code;
+  codeTag.innerHTML = code + ' ';
   Prism.highlightElement(codeTag);
 };
 
 // creates a transparent textarea that serves as an 'editor' for the code in
 // the associated <code> tag
 module.exports = function (codeTag) {
+  codeTag.innerHTML += ' ';
+
   const element = document.createElement('textarea');
   element.classList.add('code-editor');
   element.setAttribute('spellcheck', 'false');
