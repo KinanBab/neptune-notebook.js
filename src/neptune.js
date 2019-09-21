@@ -9,9 +9,17 @@ const Executor = require('./executor.js');
 function Neptune() {
   this.documents = {};
   this.executor = new Executor();
+
+  // configure express
+  this.app = express();
+  this.app.use(express.json());
+  nunjucks.configure(__dirname + '/templates/', {
+    autoescape: true,
+    express: this.app
+  });
 }
 
-Neptune.prototype.renderDocument = function (name, path, autoRefresh=false) {
+Neptune.prototype.addDocument = function (name, path, autoRefresh=false) {
   if (autoRefresh) {
     this.documents[name] = new LazyDocument(name, path);
   } else {
@@ -19,16 +27,12 @@ Neptune.prototype.renderDocument = function (name, path, autoRefresh=false) {
   }
 };
 
+Neptune.prototype.writeHTML = function (name, path) {
+  this.documents[name].writeHTML(path);
+};
+
 Neptune.prototype.start = function (port=80) {
   const that = this;
-
-  // configure express
-  const app = express();
-  app.use(express.json());
-  nunjucks.configure(__dirname + '/templates/', {
-    autoescape: true,
-    express: app
-  });
 
   // add routes for every document
   console.log('Routes/Documents:');
@@ -36,12 +40,12 @@ Neptune.prototype.start = function (port=80) {
     console.log('\thttp://localhost:' + port + '/document/' + name);
 
     // route for rendering
-    app.get('/document/'+name, (function (document, request, response) {
-      document.render(response);
+    this.app.get('/document/'+name, (function (document, request, response) {
+      response.send(document.render());
     }).bind(this, document));
 
     // route for server-side execution requests!
-    app.post('/document/'+name+'/__exec', function (request, response) {
+    this.app.post('/document/'+name+'/__exec', function (request, response) {
       const code = request.body.code;
       const scopeName = request.body.scopeName;
       response.json(that.executor.execute(code, scopeName));
@@ -49,13 +53,19 @@ Neptune.prototype.start = function (port=80) {
   }
 
   // serve static files
-  app.use('/static', express.static(__dirname + '/statics/'));
+  this.app.use('/static', express.static(__dirname + '/statics/'));
 
   // listen
-  const server = http.createServer(app);
-  server.listen(port, function () {
+  this.server = http.createServer(this.app);
+  this.server.listen(port, function () {
     console.log('');
     console.log('Started neptune!');
+  });
+};
+
+Neptune.prototype.stop = function () {
+  this.server.close(function () {
+    console.log('Stopped neptune!');
   });
 };
 
