@@ -1,5 +1,7 @@
 /* global Prism */
 
+const formatter = require('./formatter.js');
+
 function reset() {
   this.style.display = 'block';
   this.children[0].innerHTML = 'Running...';
@@ -20,15 +22,8 @@ function display(output) {
 const Console = {
   // this here is bound to the output panel HTML element
   log: function () {
-    var msg = '';
-    for (var i = 0; i < arguments.length; i++) {
-      if (typeof(arguments[i]) === 'object') {
-        msg += JSON.stringify(arguments[i]) + ' ';
-      } else {
-        msg += arguments[i] + ' ';
-      }
-    }
-    this.display(msg);
+    console.log.apply(console, arguments);
+    this.display(formatter.apply(null, arguments));
   }
 };
 
@@ -42,8 +37,8 @@ module.exports = function (tabID, options) {
   preElement.classList.add('output-panel');
 
   preElement.dataset.user = options['title'].toLowerCase();
-  preElement.dataset.host = options['env'].toLowerCase();  
-  
+  preElement.dataset.host = options['env'].toLowerCase();
+
   // create code tag
   const codeElement = document.createElement('code');
   codeElement.className = 'language-bash';
@@ -56,6 +51,6 @@ module.exports = function (tabID, options) {
   for (const attr in Console) {
     preElement.Console[attr] = Console[attr].bind(preElement);
   }
-  
+
   return preElement;
 };

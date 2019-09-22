@@ -1,4 +1,5 @@
 const scopedEval = require('./statics/browserify/eval.js');
+const formatter = require('./statics/browserify/formatter.js');
 
 function Executor() {
   this.eval = scopedEval;
@@ -14,10 +15,7 @@ Executor.prototype.execute = function (code, scopeName) {
   this.eval(code, scopeName);
 
   // return logs for rendering
-  let result = global.$__logs__$;
-  for (let i = 0; i < result.length; i++) {
-    result[i] = Array.from(result[i]);
-  }
+  let result = global.$__logs__$.map(args => formatter.apply(null, args));
   global.$__logs__$ = [];
   return result;
 };
