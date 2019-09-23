@@ -1,6 +1,8 @@
 (function () {
   const Tabs = require('./tabs.js');
 
+  const outputIDs = []; // stores all reserved output <div> IDs
+
   /*
    * Detect <pre> and <code> tags of interest
    */
@@ -19,7 +21,8 @@
   const getOptions = function (codeTag) {
     const defaultOptions = {
       title: 'Javascript',
-      env: 'browser'
+      env: 'browser',
+      language: 'javascript'
     };
 
     // result
@@ -29,6 +32,14 @@
 
       if (key === 'env' && options['title'] === defaultOptions['title']) {
         options['title'] = val;
+      } else if (key === 'language') {
+        options['language'] = options['language'].toLowerCase();
+      } else if (key === 'outputID') {
+        const id = options['outputID'];
+        if (outputIDs.indexOf(id) > -1) {
+          throw new Error('Duplicated outputID ' + id);
+        }
+        outputIDs.push(id);
       }
     };
 
@@ -59,8 +70,8 @@
     codeTag.dataset.options = JSON.stringify(options);
 
     // Make sure PRISM understands that this is JS
-    codeTag.className = 'language-javascript';
-    preTag.className = 'language-javascript';
+    codeTag.className = 'language-' + options['language'];
+    preTag.className = 'language-' + options['language'];
     preTag.classList.add('line-numbers'); // add line numbering
 
     // Style code as a tabbed frame with a toolbar and editor!

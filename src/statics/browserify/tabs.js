@@ -40,15 +40,29 @@ const createTab = function (title, tabsContainer, preTag, options) {
     // select this label
     tabsContainer.dataset.selected = tabID;
     tabLabel.classList.add('tab-label-selected');
+    // unminize icon if needed
+    const topToolbar = tabsContainer.getElementsByClassName('code-top-toolbar')[0];
+    const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
+    minimizeIcon.classList.remove('fa-arrow-down');
+    minimizeIcon.classList.add('fa-arrow-up');
   };
 
   // style container
+  codeTab.id = tabID + '-tab';
   codeTab.classList.add('code-tab');
 
-  // add toolbar and <pre> tag and output area
-  codeTab.appendChild(Toolbar(tabID));
   codeTab.appendChild(preTag);
+
+  // built-in default ouput panel
   codeTab.appendChild(OutputPanel(tabID, options));
+
+  // create output div if requested
+  if (options['outputID']) {
+    const outputDiv = document.createElement('div');
+    outputDiv.id = options['outputID'];
+    outputDiv.classList.add('custom-output-div');
+    codeTab.appendChild(outputDiv);
+  }
 
   // add the code container to the tabs
   tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
@@ -70,6 +84,7 @@ const getOrCreateTabsContainer = function (frameID, preTag) {
   if (container == null) {
     container = createTabsContainer(frameID);
     preTag.parentNode.replaceChild(container, preTag);
+    container.appendChild(Toolbar());
   } else {
     preTag.parentNode.removeChild(preTag);
   }
