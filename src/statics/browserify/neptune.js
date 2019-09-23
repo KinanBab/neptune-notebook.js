@@ -1,5 +1,6 @@
 (function () {
   const Tabs = require('./tabs.js');
+  const Inject = require('./inject.js');
 
   const outputIDs = []; // stores all reserved output <div> IDs
 
@@ -74,8 +75,13 @@
     preTag.className = 'language-' + options['language'];
     preTag.classList.add('line-numbers'); // add line numbering
 
-    // Style code as a tabbed frame with a toolbar and editor!
-    Tabs(preTag, codeTag);
+    // If inject property is true, then inject code into page at this point without displaying it
+    if (options['inject']) {
+      Inject(preTag, codeTag);
+    } else {
+      // Style code as a tabbed frame with a toolbar and editor!
+      Tabs(preTag, codeTag);
+    }
   };
 
   /*

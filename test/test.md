@@ -1,3 +1,17 @@
+```neptune[inject=true]
+console.log('test');
+```
+
+```neptune[inject=true,language=CSS]
+h1.injectedClass {
+  color: blue;
+}
+```
+
+```neptune[inject=true,language=HTML]
+<h1 class="injectedClass"> Injected Header! </h1>
+```
+
 # Test Neptune notebook document
 
 ![image1](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
@@ -20,6 +34,10 @@ Console.log(x);
 
 ```neptune[title=Server,scope=3,env=server,frame=KINAN]
 Console.log('I am the server!');
+```
+
+```neptune[inject=true,language=HTML]
+<h3> Some more injected code! </h3>
 ```
 
 ## Some other code
