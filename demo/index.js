@@ -1,9 +1,9 @@
 var Neptune = require('../src/neptune.js');
 
+// Run a neptune server
 var neptune = new Neptune();
 neptune.addDocument('test', __dirname + '/test.md', true);
-neptune.addDocument('tutorial', __dirname + '/tutorial.md', false);
 neptune.start(8080);
 
+// Optional: Dump output as HTML
 neptune.writeHTML('test', 'output/test.html');
-neptune.writeHTML('tutorial', 'output/tutorial.html');
