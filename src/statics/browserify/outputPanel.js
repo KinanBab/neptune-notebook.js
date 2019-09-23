@@ -47,7 +47,7 @@ const Console = {
 // Creates a terminal-like area for javascript or an empty div for HTML/CSS
 module.exports = function (tabID, options) {
   let outputElement;
-  if (options['lanaguage'] === 'javascript') {
+  if (options['language'] === 'javascript') {
     outputElement = document.createElement('pre');
 
     outputElement.classList.add('command-line');
@@ -72,7 +72,7 @@ module.exports = function (tabID, options) {
   // style output area
   outputElement.id = tabID + '-output';
   outputElement.classList.add('output-panel');
-  outputElement.dataset.language = options['lanaguage'];
+  outputElement.dataset.language = options['language'];
 
   // bind logging functions to output panel HTML element
   outputElement.reset = reset.bind(outputElement);

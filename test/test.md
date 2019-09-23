@@ -1,5 +1,5 @@
 ```neptune[inject=true]
-console.log('test');
+console.log('injection test!');
 ```
 
 ```neptune[inject=true,language=CSS]

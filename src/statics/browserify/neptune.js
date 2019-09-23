@@ -23,7 +23,8 @@
     const defaultOptions = {
       title: 'Javascript',
       env: 'browser',
-      language: 'javascript'
+      language: 'javascript',
+      inject: false
     };
 
     // result
