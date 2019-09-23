@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint -c .eslint.json .",
-    "build": "browserify src/statics/browserify/neptune.js -o src/statics/neptune.js",
-    "preinstall": "sudo npm install browserify -g",
-    "postinstall": "npm run-script build"
+    "build": "./node_modules/.bin/browserify src/statics/browserify/neptune.js -o src/statics/neptune.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +30,7 @@
     "showdown": "^1.9.0"
   },
   "devDependencies": {
+    "browserify": "^16.5.0",
     "eslint": "^6.4.0",
     "eslint-plugin-requirejs": "^4.0.0"
   }

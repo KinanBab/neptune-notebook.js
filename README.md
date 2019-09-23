@@ -71,7 +71,7 @@ block), even if they are configured to have the same scope in the markdown sourc
 
 You can install neptune with:
 ```bash
-npm install neptune
+npm install neptune-notebook
 ```
 
 After installation, you can run a neptune server as follows:
