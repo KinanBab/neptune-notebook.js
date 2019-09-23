@@ -79,9 +79,8 @@ After installation, you can run a neptune server as follows:
 var Neptune = require('neptune-notebook'); // require neptune server-side code
 
 var neptune = new Neptune(); // create a new server
-neptune.addDocument('document-name1', 'path/to/markdown1', <auto-refresh>);
-neptune.addDocument('document-name2', 'path/to/markdown2', <auto-refresh>);
-neptune.addDocument('document-name3', 'path/to/markdown3', <auto-refresh>);
+neptune.addDocument('document-name1', 'path/to/markdown1', [<auto-refresh>=false], [<injected-JS-files>=[]], [<injected-CSS-files>=[]], [<injected-HTML-files>=[]]);
+neptune.addDocument('document-name2', 'path/to/markdown2', [<auto-refresh>=false], [<injected-JS-files>=[]], [<injected-CSS-files>=[]], [<injected-HTML-files>=[]]);
 ...
 
 // Static serving: Dump document as an HTML file
@@ -91,10 +90,30 @@ neptune.writeHTML('document-name1', 'path/to/output/html');
 neptune.start(<port number>); // neptune will log to the console the urls for each document
 ```
 
-*Note:* <auto-refresh> is an optional boolean parameter, if set to `true`, it will automatically render any changes to the markdown source whenever the document is accessed with the browser.
+*Where:*
+1. `<auto-refresh>`: an optional boolean parameter, if set to `true`, it will automatically render any changes to the markdown source whenever the document is accessed with the browser.
 By default, this is disabled.
+2. `<injected-*-files>`: an array of (javascript, CSS, or HTML) file paths to inject statically into the page, look at the _Injecting Code Into Output Document_ section below for more details.
 
-*Note:* you can choose to either statically or dynamically server the output document (or both).
+*Note:* you can choose to either statically or dynamically serve the output document (or both).
+
+## Injecting Code Into Output Document
+
+Neptune supports two approaches for injecting code into the output document. Code can be injected statically (prior
+to the output HTML generation) or dynamically (with client side javascript that executes when the page is loaded).
+
+Static injection is useful for injecting styling rules or external javascript dependencies. It is restricted in that
+it can only inject code in fixed locations in the code. Namely, HTML and CSS code are injected at the end of <head> body,
+while Javascript code is injected at the end of <body> inside a <script> tag.
+
+Static injection is specified by providing an array of files whose content is injected into the document in order (as if by <script> or <link> tags).
+
+```javascript
+neptune.addDocument('document-name', 'path/to/markdown', <autosave>, ['/path/to/JS', ...], ['/path/to/CSS', ...], ['/path/to/HTML', ...]);
+```
+
+Dynamic injection is more flexible as it allows injecting code into any location in the page. Dynamic injection is defined within the markdown
+input file using a neptune code block with `inject=true`. Look at the _Interactive Code Blocks_ section above for more details.
 
 ## Code Samples
 

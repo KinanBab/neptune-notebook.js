@@ -1,9 +1,12 @@
 const nunjucks = require('nunjucks');
 const fs = require('fs');
 
-function Renderer(title, contentHtml) {
+function Renderer(title, contentHtml, injectedJS, injectedCSS, injectedHTML) {
   this.title = title;
   this.contentHtml = contentHtml;
+  this.injectedJS = injectedJS;
+  this.injectedCSS = injectedCSS;
+  this.injectedHTML = injectedHTML;
 }
 
 Renderer.prototype.render = function (isOffline=undefined) {
@@ -20,7 +23,11 @@ Renderer.prototype.render = function (isOffline=undefined) {
     neptuneCSS: neptuneCSS,
     prismCSS: prismCSS,
     neptuneJS: neptuneJS,
-    prismJS: prismJS
+    prismJS: prismJS,
+    // any injected JS/CSS code
+    injectedJS: this.injectedJS,
+    injectedCSS: this.injectedCSS,
+    injectedHTML: this.injectedHTML
   });
 };
 

@@ -19,11 +19,11 @@ function Neptune() {
   });
 }
 
-Neptune.prototype.addDocument = function (name, path, autoRefresh=false) {
+Neptune.prototype.addDocument = function (name, path, autoRefresh=false, injectedJS=[], injectedCSS=[], injectedHTML=[]) {
   if (autoRefresh) {
-    this.documents[name] = new LazyDocument(name, path);
+    this.documents[name] = new LazyDocument(name, path, injectedJS, injectedCSS, injectedHTML);
   } else {
-    this.documents[name] = new Document(name, path);
+    this.documents[name] = new Document(name, path, injectedJS, injectedCSS, injectedHTML);
   }
 };
 

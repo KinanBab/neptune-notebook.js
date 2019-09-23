@@ -348,6 +348,17 @@ pre[class*="language-"].line-numbers > code {
 
 
     </style>
+    <style>
+      /* injected CSS */
+      body {
+  background-color: #aaaaaa;
+}
+
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+
   </head>
   <body>
     <pre><code class="neptune[inject=true] language-neptune[inject=true]">console.log('injection test!');
@@ -985,6 +996,12 @@ module.exports = function () {
 };
 
 },{"./eval.js":2,"./serverExec.js":7}]},{},[5]);
+
+    </script>
+    <script type="text/javascript">
+      // injected JS
+      console.log('Compiled time injected code!');
+
 
     </script>
   </body>

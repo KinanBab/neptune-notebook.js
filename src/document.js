@@ -6,13 +6,25 @@ const showdown = require('showdown');
 
 const converter = new showdown.Converter();
 
-function Document(title, path) {
+function Document(title, path, injectedJS, injectedCSS, injectedHTML) {
   this.title = title;
 
   const content = fs.readFileSync(path, 'UTF8');
   this.contentHtml = converter.makeHtml(content);
 
-  this.renderer = new Renderer(this.title, this.contentHtml);
+  const readAndConcat = function (array) {
+    return array.map(function (path) {
+      return fs.readFileSync(path, 'UTF8');
+    }).reduce(function (str, fileContent) {
+      return str + fileContent + '\n';
+    }, '');
+  };
+
+  injectedJS = readAndConcat(injectedJS);
+  injectedCSS = readAndConcat(injectedCSS);
+  injectedHTML = readAndConcat(injectedHTML);
+
+  this.renderer = new Renderer(this.title, this.contentHtml, injectedJS, injectedCSS, injectedHTML);
   this.HTML = this.renderer.render();
 }
 
