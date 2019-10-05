@@ -38,7 +38,7 @@ body {
 
 }
 .tab-label-selected {
-  background: rgb(45, 45, 45);
+  background: #2B2B2B;
   color: #FFFFFF;
 }
 .tab-label:hover {
@@ -56,44 +56,25 @@ body {
  * Code editor
  * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
  */
-.code-editor {
-  /* overlay this perfectly on top of code */
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: calc(100% - 1px);
-
-  /* Make sure nothing is visible from this text area */
-  border: none;
+.CodeMirror {
+  /* layout */
   overflow: hidden;
-  resize: none;
-  background-color: transparent;
-  color: transparent;
-  caret-color: white;
-  
-  /* have the same exact font as <code> */
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
-  font-size: 16px;
-  line-height: 24px;
-  overflow-wrap: normal;
-  text-align: left;
-  word-break: normal;
-  word-spacing: 0px;
-  -moz-tab-size: 4;
+  height: auto;
+  min-height: 40px;
 
-  /* have the same padding as <code> (due to line numbers) */
-  padding-left: 3.8em;
-  padding-right: 1em;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.CodeMirror-scroll {
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
-.code-tab pre {
-  min-height: 80px;
-  overflow: hidden;
+.CodeMirror-linenumbers {
+  margin-right: 15px;
 }
 
 /*
@@ -117,7 +98,7 @@ body {
 }
 
 .code-top-toolbar a:hover {
-  background-color: rgb(45, 45, 45);
+  background-color: #2B2B2B;
   color: #FFFFFF;
 }
 
@@ -125,7 +106,21 @@ body {
  * output terminal like panel
  */
 .output-panel {
+  /* layout */
   display: none;
+  margin: .5em 0;
+  padding: 1em;
+  /* colors */
+  background-color: #2B2B2B;
+  color: #ccc;
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+.output-line-span {
+  color: #999;
 }
 
 /*

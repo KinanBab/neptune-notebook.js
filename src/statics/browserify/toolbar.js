@@ -18,38 +18,37 @@ const toolbarClick = function () {
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
-  const codeTag = codeTab.getElementsByTagName('code')[0];
-  const textAreaTag = codeTab.getElementsByTagName('textarea')[0];
   const outputPanel = document.getElementById(tabID + '-output');
+  const codeMirrorDiv = codeTab.getElementsByClassName('code-mirror-div')[0];
+  const codeMirrorInstance = codeMirrorDiv.codeMirrorInstance;
 
-  const options = JSON.parse(codeTag.dataset.options);
+  const options = JSON.parse(codeMirrorDiv.dataset.options);
 
   let range;
   switch (type) {
     case 'copy':
       window.getSelection().removeAllRanges();
       range = document.createRange();
-      range.selectNode(codeTag);
+      range.selectNode(codeMirrorDiv);
       window.getSelection().addRange(range);
       document.execCommand('copy');
       window.getSelection().removeAllRanges();
       break;
 
     case 'trash':
-      textAreaTag.value = '';
-      textAreaTag.handler();
+      codeMirrorInstance.setValue('');
       break;
 
     case 'play':
       outputPanel.reset();
       if (options['language'] === 'javascript') {
         if (options['env'] === 'server') {
-          serverExec(codeTag.textContent, options['scope'], tabID);
+          serverExec(codeMirrorInstance.getValue(), options['scope'], tabID);
         } else {
-          scopedEval(codeTag.textContent, options['scope'], tabID);
+          scopedEval(codeMirrorInstance.getValue(), options['scope'], tabID);
         }
       } else {
-        executeNonJavascript(codeTag.textContent, options['language'], tabID);
+        executeNonJavascript(codeMirrorInstance.getValue(), options['language'], tabID);
       }
       break;
 

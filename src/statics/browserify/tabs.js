@@ -2,12 +2,11 @@
  * dependencies
  */
 const Toolbar = require('./toolbar.js');
-const Editor = require('./editor.js');
 const OutputPanel = require('./outputPanel.js');
 
 let autoCounter = 0;
 
-const createTab = function (title, tabsContainer, preTag, options) {
+const createTab = function (title, tabsContainer, code, options) {
   const tabRadio = document.createElement('input');
   const tabLabel = document.createElement('label');
   const codeTab = document.createElement('div');
@@ -15,6 +14,28 @@ const createTab = function (title, tabsContainer, preTag, options) {
   // create ID for radio
   const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
+
+  // Code mirror HTML elements
+  const editorDiv = document.createElement('div');
+  editorDiv.classList.add('code-mirror-div');
+  editorDiv.dataset.options = JSON.stringify(options);
+
+  let mode = options['language'].toLowerCase();
+  if (mode === 'html') {
+    mode += 'mixed';
+  }
+  editorDiv.codeMirrorInstance = CodeMirror(editorDiv, {
+    value: code.trim(),
+    mode: mode,
+    lineNumbers: true,
+    theme: 'darcula',
+    viewportMargin: Infinity
+  });
+  if (count === 0) {
+    setTimeout(function () {
+      editorDiv.codeMirrorInstance.refresh();
+    }, 1);
+  }
 
   // style lable and radio
   tabRadio.className = 'tab-input';
@@ -45,13 +66,16 @@ const createTab = function (title, tabsContainer, preTag, options) {
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
+    // refresh code mirror
+    editorDiv.codeMirrorInstance.refresh();
   };
 
   // style container
   codeTab.id = tabID + '-tab';
   codeTab.classList.add('code-tab');
 
-  codeTab.appendChild(preTag);
+  // append code mirror
+  codeTab.appendChild(editorDiv);
 
   // built-in default ouput panel
   codeTab.appendChild(OutputPanel(tabID, options));
@@ -102,8 +126,5 @@ module.exports = function (preTag, codeTag) {
   const tabsContainer = getOrCreateTabsContainer(frameID, preTag);
 
   // Add this <pre><code> tags as a tab to the container
-  createTab(title, tabsContainer, preTag, options);
-
-  // add transparent text area that mimics the code tag
-  preTag.appendChild(Editor(codeTag));
+  createTab(title, tabsContainer, codeTag.textContent, options);
 };

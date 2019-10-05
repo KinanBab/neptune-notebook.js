@@ -1,41 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-/* global Prism */
-
-// bind input to the textarea to the code tag
-const codeInputHandler = function (codeTag, textAreaTag) {
-  textAreaTag.scrollTop = 0;
-  let code = textAreaTag.value;
-
-  codeTag.innerHTML = code + ' ';
-  Prism.highlightElement(codeTag);
-};
-
-// creates a transparent textarea that serves as an 'editor' for the code in
-// the associated <code> tag
-module.exports = function (codeTag) {
-  codeTag.innerHTML += ' ';
-
-  const element = document.createElement('textarea');
-  element.classList.add('code-editor');
-  element.setAttribute('spellcheck', 'false');
-
-  // expose handler for input binding
-  element.handler = codeInputHandler.bind(null, codeTag, element);
-
-  // listen to any input changes
-  if (element.addEventListener) {
-    element.addEventListener('input', element.handler);
-  } else if (element.attachEvent) { // for IE11
-    element.attachEvent('onpropertychange', element.handler);
-  }
-
-  // put code in textarea
-  element.value = codeTag.textContent;
-
-  return element;
-};
-
-},{}],2:[function(require,module,exports){
 (function (global){
 /*
  * Handles scoped evaluation of user code.
@@ -48,10 +11,6 @@ module.exports = function (codeTag) {
  *   Browser-only: require, module, exports from browserify.
  * It is unsafe to modify any of these variables inside user code. Console should be used to log outputs to the UI.
  *
- * User code that uses 'let' or 'const' causes eval to use strict mode, and scope the executed code further using code blocks
- * in a way that our function-closures scoping mechanism cannot handle properly. Such user code will run properly if it is in
- * a stand-alone code block, but variables defined in it will not be visible to other code blocks (or re-runs of the same code
- * block), even if they are configured to have the same scope!
  */
 
 // Store all scopes
@@ -103,13 +62,13 @@ module.exports = function (code, scopeName, tabID) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 // format arguments as if console.log
 module.exports = function () {
-  var msg = '';
+  let msg = '';
 
   // loop over arguments and format each
-  for (var i = 0; i < arguments.length; i++) {
+  for (let i = 0; i < arguments.length; i++) {
     // argument is an error: display error name and stack information if available
     if (arguments[i] instanceof Error) {
       msg += arguments[i].toString();
@@ -122,7 +81,7 @@ module.exports = function () {
         }
       }
       if (arguments[i].stack) {
-        var stackStr = arguments[i].stack.toString().split('\n').join('\n\t\t');
+        let stackStr = arguments[i].stack.toString().split('\n').join('\n\t\t');
         msg += '\nStack:\t' + stackStr;
       }
 
@@ -139,7 +98,7 @@ module.exports = function () {
   return msg;
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 module.exports = function (preTag, codeTag) {
   // Parse options from markdown
   const options = JSON.parse(codeTag.dataset.options);
@@ -162,7 +121,7 @@ module.exports = function (preTag, codeTag) {
   preTag.parentNode.replaceChild(element, preTag);
 };
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function () {
   const Tabs = require('./tabs.js');
   const Inject = require('./inject.js');
@@ -258,10 +217,14 @@ module.exports = function (preTag, codeTag) {
   });
 })();
 
-},{"./inject.js":4,"./tabs.js":8}],6:[function(require,module,exports){
-/* global Prism */
-
+},{"./inject.js":3,"./tabs.js":7}],5:[function(require,module,exports){
 const formatter = require('./formatter.js');
+
+function lineHeader () {
+  const user = this.dataset.user;
+  const host = this.dataset.host;
+  return '<span class="output-line-span">[' + user + '@' + host + '] $</span> | ';
+}
 
 function reset(hideOutput) {
   this.dataset.shown = true;
@@ -280,8 +243,8 @@ function display(output) {
     this.children[0].innerHTML += '\n';
   }
 
-  this.children[0].innerHTML += output;
-  Prism.highlightElement(this.children[0]);
+  const lineHeader = this.lineHeader();
+  this.children[0].innerHTML += lineHeader + output.split('\n').join('\n' + lineHeader);
 }
 
 function hide() {
@@ -339,11 +302,12 @@ module.exports = function (tabID, options) {
   outputElement.reset = reset.bind(outputElement);
   outputElement.hide = hide.bind(outputElement);
   outputElement.unhide = unhide.bind(outputElement);
+  outputElement.lineHeader = lineHeader.bind(outputElement);
 
   return outputElement;
 };
 
-},{"./formatter.js":3}],7:[function(require,module,exports){
+},{"./formatter.js":2}],6:[function(require,module,exports){
 // Execute this code using in the given scope name in the server via node, and get back results!
 module.exports = function (code, scopeName, tabID) {
   if (window.$__offline__$) {
@@ -365,17 +329,16 @@ module.exports = function (code, scopeName, tabID) {
   xhr.send(JSON.stringify({scopeName: scopeName, code: code}));
 };
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*
  * dependencies
  */
 const Toolbar = require('./toolbar.js');
-const Editor = require('./editor.js');
 const OutputPanel = require('./outputPanel.js');
 
 let autoCounter = 0;
 
-const createTab = function (title, tabsContainer, preTag, options) {
+const createTab = function (title, tabsContainer, code, options) {
   const tabRadio = document.createElement('input');
   const tabLabel = document.createElement('label');
   const codeTab = document.createElement('div');
@@ -383,6 +346,28 @@ const createTab = function (title, tabsContainer, preTag, options) {
   // create ID for radio
   const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
+
+  // Code mirror HTML elements
+  const editorDiv = document.createElement('div');
+  editorDiv.classList.add('code-mirror-div');
+  editorDiv.dataset.options = JSON.stringify(options);
+
+  let mode = options['language'].toLowerCase();
+  if (mode === 'html') {
+    mode += 'mixed';
+  }
+  editorDiv.codeMirrorInstance = CodeMirror(editorDiv, {
+    value: code.trim(),
+    mode: mode,
+    lineNumbers: true,
+    theme: 'darcula',
+    viewportMargin: Infinity
+  });
+  if (count === 0) {
+    setTimeout(function () {
+      editorDiv.codeMirrorInstance.refresh();
+    }, 1);
+  }
 
   // style lable and radio
   tabRadio.className = 'tab-input';
@@ -413,13 +398,16 @@ const createTab = function (title, tabsContainer, preTag, options) {
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
+    // refresh code mirror
+    editorDiv.codeMirrorInstance.refresh();
   };
 
   // style container
   codeTab.id = tabID + '-tab';
   codeTab.classList.add('code-tab');
 
-  codeTab.appendChild(preTag);
+  // append code mirror
+  codeTab.appendChild(editorDiv);
 
   // built-in default ouput panel
   codeTab.appendChild(OutputPanel(tabID, options));
@@ -470,13 +458,10 @@ module.exports = function (preTag, codeTag) {
   const tabsContainer = getOrCreateTabsContainer(frameID, preTag);
 
   // Add this <pre><code> tags as a tab to the container
-  createTab(title, tabsContainer, preTag, options);
-
-  // add transparent text area that mimics the code tag
-  preTag.appendChild(Editor(codeTag));
+  createTab(title, tabsContainer, codeTag.textContent, options);
 };
 
-},{"./editor.js":1,"./outputPanel.js":6,"./toolbar.js":9}],9:[function(require,module,exports){
+},{"./outputPanel.js":5,"./toolbar.js":8}],8:[function(require,module,exports){
 const scopedEval = require('./eval.js');
 const serverExec = require('./serverExec.js');
 
@@ -497,38 +482,37 @@ const toolbarClick = function () {
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
-  const codeTag = codeTab.getElementsByTagName('code')[0];
-  const textAreaTag = codeTab.getElementsByTagName('textarea')[0];
   const outputPanel = document.getElementById(tabID + '-output');
+  const codeMirrorDiv = codeTab.getElementsByClassName('code-mirror-div')[0];
+  const codeMirrorInstance = codeMirrorDiv.codeMirrorInstance;
 
-  const options = JSON.parse(codeTag.dataset.options);
+  const options = JSON.parse(codeMirrorDiv.dataset.options);
 
   let range;
   switch (type) {
     case 'copy':
       window.getSelection().removeAllRanges();
       range = document.createRange();
-      range.selectNode(codeTag);
+      range.selectNode(codeMirrorDiv);
       window.getSelection().addRange(range);
       document.execCommand('copy');
       window.getSelection().removeAllRanges();
       break;
 
     case 'trash':
-      textAreaTag.value = '';
-      textAreaTag.handler();
+      codeMirrorInstance.setValue('');
       break;
 
     case 'play':
       outputPanel.reset();
       if (options['language'] === 'javascript') {
         if (options['env'] === 'server') {
-          serverExec(codeTag.textContent, options['scope'], tabID);
+          serverExec(codeMirrorInstance.getValue(), options['scope'], tabID);
         } else {
-          scopedEval(codeTag.textContent, options['scope'], tabID);
+          scopedEval(codeMirrorInstance.getValue(), options['scope'], tabID);
         }
       } else {
-        executeNonJavascript(codeTag.textContent, options['language'], tabID);
+        executeNonJavascript(codeMirrorInstance.getValue(), options['language'], tabID);
       }
       break;
 
@@ -581,4 +565,4 @@ module.exports = function () {
   return element;
 };
 
-},{"./eval.js":2,"./serverExec.js":7}]},{},[5]);
+},{"./eval.js":1,"./serverExec.js":6}]},{},[4]);

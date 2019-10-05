@@ -1,9 +1,9 @@
 // format arguments as if console.log
 module.exports = function () {
-  var msg = '';
+  let msg = '';
 
   // loop over arguments and format each
-  for (var i = 0; i < arguments.length; i++) {
+  for (let i = 0; i < arguments.length; i++) {
     // argument is an error: display error name and stack information if available
     if (arguments[i] instanceof Error) {
       msg += arguments[i].toString();
@@ -16,7 +16,7 @@ module.exports = function () {
         }
       }
       if (arguments[i].stack) {
-        var stackStr = arguments[i].stack.toString().split('\n').join('\n\t\t');
+        let stackStr = arguments[i].stack.toString().split('\n').join('\n\t\t');
         msg += '\nStack:\t' + stackStr;
       }
 

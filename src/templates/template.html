@@ -4,14 +4,38 @@
     <title>{{ title }} - Neptune-notebook.js</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- code mirror dependencies -->
+    <script type="text/javascript">
+      {{ codemirrorJS|safe }}
+    </script>
+    <style>
+      {{ codemirrorCSS|safe }}
+    </style>
+    <style>
+      {{ codemirrorDarculaCSS|safe }}
+    </style>
+    <script type="text/javascript">
+      {{ codemirrorModeJS|safe }}
+    </script>
+    <script type="text/javascript">
+      {{ codemirrorModeXML|safe }}
+    </script>
+    <script type="text/javascript">
+      {{ codemirrorModeCSS|safe }}
+    </script>
+    <script type="text/javascript">
+      {{ codemirrorModeHTML|safe }}
+    </script>
+    <!-- end of code mirror -->
+
+    <!-- neptune -->
     <style>
       /* neptune.css */
       {{ neptuneCSS|safe }}
     </style>
-    <style>
-      /* prism.css */
-      {{ prismCSS|safe }}
-    </style>
+
+    <!-- injection -->
     <style>
       /* injected CSS */
       {{ injectedCSS|safe }}
@@ -21,10 +45,6 @@
   <body>
     {{ contentHtml|safe }}
 
-    <script type="text/javascript">
-      // prism.js
-      {{ prismJS|safe }}
-    </script>
     <script type="text/javascript">
       {% if isOffline %}
       window.$__offline__$ = true;

@@ -9,10 +9,6 @@
  *   Browser-only: require, module, exports from browserify.
  * It is unsafe to modify any of these variables inside user code. Console should be used to log outputs to the UI.
  *
- * User code that uses 'let' or 'const' causes eval to use strict mode, and scope the executed code further using code blocks
- * in a way that our function-closures scoping mechanism cannot handle properly. Such user code will run properly if it is in
- * a stand-alone code block, but variables defined in it will not be visible to other code blocks (or re-runs of the same code
- * block), even if they are configured to have the same scope!
  */
 
 // Store all scopes

@@ -11,9 +11,14 @@ function Renderer(title, contentHtml, injectedJS, injectedCSS, injectedHTML) {
 
 Renderer.prototype.render = function (isOffline=undefined) {
   const neptuneCSS = fs.readFileSync(__dirname + '/statics/neptune.css', 'UTF8');
-  const prismCSS = fs.readFileSync(__dirname + '/statics/prism.css', 'UTF8');
   const neptuneJS = fs.readFileSync(__dirname + '/statics/neptune.js', 'UTF8');
-  const prismJS = fs.readFileSync(__dirname + '/statics/prism.js', 'UTF8');
+  const codemirrorJS = fs.readFileSync(__dirname + '/statics/codemirror/codemirror.js', 'UTF8');
+  const codemirrorCSS = fs.readFileSync(__dirname + '/statics/codemirror/codemirror.css', 'UTF8');
+  const codemirrorDarculaCSS = fs.readFileSync(__dirname + '/statics/codemirror/darcula.css', 'UTF8');
+  const codemirrorModeJS = fs.readFileSync(__dirname + '/statics/codemirror/javascript.js', 'UTF8');
+  const codemirrorModeCSS = fs.readFileSync(__dirname + '/statics/codemirror/css.js', 'UTF8');
+  const codemirrorModeXML = fs.readFileSync(__dirname + '/statics/codemirror/xml.js', 'UTF8');
+  const codemirrorModeHTML = fs.readFileSync(__dirname + '/statics/codemirror/htmlmixed.js', 'UTF8');
 
   return nunjucks.render('template.html', {
     title: this.title,
@@ -21,9 +26,14 @@ Renderer.prototype.render = function (isOffline=undefined) {
     isOffline: isOffline,
     // dump CSS and JS dependencies into file
     neptuneCSS: neptuneCSS,
-    prismCSS: prismCSS,
     neptuneJS: neptuneJS,
-    prismJS: prismJS,
+    codemirrorJS: codemirrorJS,
+    codemirrorCSS: codemirrorCSS,
+    codemirrorDarculaCSS: codemirrorDarculaCSS,
+    codemirrorModeJS: codemirrorModeJS,
+    codemirrorModeCSS: codemirrorModeCSS,
+    codemirrorModeXML: codemirrorModeXML,
+    codemirrorModeHTML: codemirrorModeHTML,
     // any injected JS/CSS code
     injectedJS: this.injectedJS,
     injectedCSS: this.injectedCSS,

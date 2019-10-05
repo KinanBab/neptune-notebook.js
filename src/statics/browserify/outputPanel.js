@@ -1,6 +1,10 @@
-/* global Prism */
-
 const formatter = require('./formatter.js');
+
+function lineHeader () {
+  const user = this.dataset.user;
+  const host = this.dataset.host;
+  return '<span class="output-line-span">[' + user + '@' + host + '] $</span> | ';
+}
 
 function reset(hideOutput) {
   this.dataset.shown = true;
@@ -19,8 +23,8 @@ function display(output) {
     this.children[0].innerHTML += '\n';
   }
 
-  this.children[0].innerHTML += output;
-  Prism.highlightElement(this.children[0]);
+  const lineHeader = this.lineHeader();
+  this.children[0].innerHTML += lineHeader + output.split('\n').join('\n' + lineHeader);
 }
 
 function hide() {
@@ -78,6 +82,7 @@ module.exports = function (tabID, options) {
   outputElement.reset = reset.bind(outputElement);
   outputElement.hide = hide.bind(outputElement);
   outputElement.unhide = unhide.bind(outputElement);
+  outputElement.lineHeader = lineHeader.bind(outputElement);
 
   return outputElement;
 };
