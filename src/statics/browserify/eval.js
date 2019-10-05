@@ -24,9 +24,10 @@ const $__eval__$ = function $__eval__$(Console, $__code__$) {
   // Quine for scoping evals: relies on function closures to return a handler to the scope after an eval is executed!
   // Simplified fiddle to help understand why this quine is useful: https://jsfiddle.net/kjvo6h2x/
   try {
-    eval($__code__$);
-    eval($__eval__$.toString());
-    return $__eval__$;
+    $__code__$ += '\n';
+    $__code__$ += $__eval__$.toString();
+    $__code__$ += '$__eval__$;';
+    return eval($__code__$);
   } catch (exception) {
     Console.log(exception);
     return $__eval__$;

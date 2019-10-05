@@ -60,12 +60,8 @@ The following neptune internal variables are visible to code running inside code
 
 ```javascript
 $__scopes__$, $__logMiddlewareBrowser__$, $__logMiddlewareServer__$, $__eval__$, $__code__$
-Console // contains one attribute: 'log' which mimics console.log but displays output inside the HTML page.
+Console // contains one attribute: 'log' which mimics console.log but displays output inside the HTML page, this can be used safetly, but not modified.
 ```
-
-Using `let` or `const` inside the code block will cause eval call to run in strict mode. Such user code will run properly if it is in
-a stand-alone code block, but variables defined in it will not be visible to other code blocks (or re-runs of the same code
-block), even if they are configured to have the same scope in the markdown source.
 
 ## Running Neptune
 
