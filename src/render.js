@@ -19,6 +19,7 @@ Renderer.prototype.render = function (isOffline=undefined) {
   const codemirrorModeCSS = fs.readFileSync(__dirname + '/statics/codemirror/css.js', 'UTF8');
   const codemirrorModeXML = fs.readFileSync(__dirname + '/statics/codemirror/xml.js', 'UTF8');
   const codemirrorModeHTML = fs.readFileSync(__dirname + '/statics/codemirror/htmlmixed.js', 'UTF8');
+  const filesaverJS = fs.readFileSync(__dirname + '/statics/filesaver/FileSaver.min.js', 'UTF8');
 
   return nunjucks.render('template.html', {
     title: this.title,
@@ -34,6 +35,7 @@ Renderer.prototype.render = function (isOffline=undefined) {
     codemirrorModeCSS: codemirrorModeCSS,
     codemirrorModeXML: codemirrorModeXML,
     codemirrorModeHTML: codemirrorModeHTML,
+    filesaverJS: filesaverJS,
     // any injected JS/CSS code
     injectedJS: this.injectedJS,
     injectedCSS: this.injectedCSS,

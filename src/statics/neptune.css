@@ -9,6 +9,47 @@ body {
   padding: 50px;
 }
 
+/* Bar on top for downloading and stuff */
+#neptune-bar {
+  /* style */
+  background: #ffffff;
+  border-bottom: solid #000000 2px;
+  /* layout */
+  margin: -50px -50px 0 -50px;
+  height: 40px;
+  position: relative;
+  text-align: center;
+}
+
+#neptune-bar span {
+  /* layout */
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0 5px 5px 0;
+  /* font */
+  font-size: 8px;
+}
+
+#neptune-download {
+  /* layout */
+  display: block;
+  width: 150px;
+  height: 40px;
+  padding: 10px;
+  margin: auto;
+  /* font */
+  font-weight: bold;
+  font-size: 20px;
+  /* style */
+  cursor: pointer;
+}
+
+#neptune-download:hover {
+  background: #2B2B2B;
+  color: #FFFFFF;
+}
+
 /*
  * Tabs layout
  * https://kyusuf.com/post/completely-css-tabs/

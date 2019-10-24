@@ -28,6 +28,11 @@
       {{ codemirrorModeHTML|safe }}
     </script>
     <!-- end of code mirror -->
+    <!-- file saver.js -->
+    <script type="text/javascript">
+      {{ filesaverJS|safe }}
+    </script>
+    <!-- end of file saver -->
 
     <!-- neptune -->
     <style>
@@ -43,6 +48,10 @@
     {{ injectedHTML|safe }}
   </head>
   <body>
+    <div id="neptune-bar">
+      <a id="neptune-download">Save <i class="fa fa-download"></i></a>
+      <span>Made by <a href="https://www.npmjs.com/package/neptune-notebook">Neptune Notebook</a></span>
+    </div>
     {{ contentHtml|safe }}
 
     <script type="text/javascript">

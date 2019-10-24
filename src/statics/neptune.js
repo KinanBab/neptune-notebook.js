@@ -1,4 +1,61 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+// Exports a document to an HTML page with all outputs and interactions stored (minus scopes)
+const markup = document.documentElement.innerHTML;
+
+const getAllOutputs = function () {
+  const outputs = {
+    defaultPanels: {},
+    customPanels: {}
+  };
+
+  const defaultPanels = document.getElementsByClassName('output-panel');
+  for (let i = 0; i < defaultPanels.length; i++) {
+    outputs.defaultPanels[defaultPanels[i].id] = defaultPanels[i].innerHTML;
+  }
+
+  const customPanels = document.getElementsByClassName('custom-output-div');
+  for (let i = 0; i < customPanels.length; i++) {
+    outputs.customPanels[customPanels[i].id] = customPanels[i].innerHTML;
+  }
+
+  return outputs;
+};
+
+const fillOutputs = function (outputs) {
+  const defaultOutputs = outputs.defaultPanels;
+  const customOutputs = outputs.customPanels;
+  
+  for (let key in defaultOutputs) {
+    if (defaultOutputs.hasOwnProperty(key)) {
+      const panel = document.getElementById(key);
+      panel.reset();
+      panel.innerHTML = defaultOutputs[key];
+    }
+  }
+  for (let key in customOutputs) {
+    if (customOutputs.hasOwnProperty(key)) {
+      const panel = document.getElementById(key);
+      panel.innerHTML = customOutputs[key];
+    }
+  }
+};
+
+const genCode = function (outputs) {
+  return '<script type="text/javascript">' +
+  'window.$__offline__$ = true;' +
+  '(' + fillOutputs.toString() + ')(' + JSON.stringify(outputs) + ');' +
+  '<' + '/' + 'script>';
+};
+
+module.exports = function () {
+  const suffix = "\n<script type='text/javascipt'>window.$__offline__$ = true;<" + "/script>\n";
+  const content = "<html>\n" + markup + genCode(getAllOutputs()) + "<" + "/html>";
+
+  const blob = new Blob([content], {type: 'text/javascript;charset=utf-8'});
+  saveAs(blob, 'output.html');
+};
+
+},{}],2:[function(require,module,exports){
 (function (global){
 /*
  * Handles scoped evaluation of user code.
@@ -62,7 +119,7 @@ module.exports = function (code, scopeName, tabID) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 // format arguments as if console.log
 module.exports = function () {
   let msg = '';
@@ -98,7 +155,7 @@ module.exports = function () {
   return msg;
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = function (preTag, codeTag) {
   // Parse options from markdown
   const options = JSON.parse(codeTag.dataset.options);
@@ -121,10 +178,11 @@ module.exports = function (preTag, codeTag) {
   preTag.parentNode.replaceChild(element, preTag);
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function () {
   const Tabs = require('./tabs.js');
   const Inject = require('./inject.js');
+  document.getElementById('neptune-download').onclick = require('./download.js');
 
   const outputIDs = []; // stores all reserved output <div> IDs
 
@@ -217,7 +275,7 @@ module.exports = function (preTag, codeTag) {
   });
 })();
 
-},{"./inject.js":3,"./tabs.js":7}],5:[function(require,module,exports){
+},{"./download.js":1,"./inject.js":4,"./tabs.js":8}],6:[function(require,module,exports){
 const formatter = require('./formatter.js');
 
 function lineHeader () {
@@ -307,14 +365,9 @@ module.exports = function (tabID, options) {
   return outputElement;
 };
 
-},{"./formatter.js":2}],6:[function(require,module,exports){
+},{"./formatter.js":3}],7:[function(require,module,exports){
 // Execute this code using in the given scope name in the server via node, and get back results!
 module.exports = function (code, scopeName, tabID) {
-  if (window.$__offline__$) {
-    alert('Cannot execute server-side code while offline!');
-    return;
-  }
-
   const xhr = new XMLHttpRequest();
   xhr.open('POST', window.location.href + '/__exec');
   xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
@@ -329,7 +382,7 @@ module.exports = function (code, scopeName, tabID) {
   xhr.send(JSON.stringify({scopeName: scopeName, code: code}));
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*
  * dependencies
  */
@@ -461,7 +514,7 @@ module.exports = function (preTag, codeTag) {
   createTab(title, tabsContainer, codeTag.textContent, options);
 };
 
-},{"./outputPanel.js":5,"./toolbar.js":8}],8:[function(require,module,exports){
+},{"./outputPanel.js":6,"./toolbar.js":9}],9:[function(require,module,exports){
 const scopedEval = require('./eval.js');
 const serverExec = require('./serverExec.js');
 
@@ -504,6 +557,11 @@ const toolbarClick = function () {
       break;
 
     case 'play':
+      if ((options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
+        alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
+        break;
+      }
+
       outputPanel.reset();
       if (options['language'] === 'javascript') {
         if (options['env'] === 'server') {
@@ -565,4 +623,4 @@ module.exports = function () {
   return element;
 };
 
-},{"./eval.js":1,"./serverExec.js":6}]},{},[4]);
+},{"./eval.js":2,"./serverExec.js":7}]},{},[5]);

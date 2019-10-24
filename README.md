@@ -21,6 +21,7 @@ Currently the following features are supported:
 7. Injecting HTML, CSS, and Javascript directly into document for customized styling or behavior.
 8. Can run interactive node.js code via the server.
 9. Dumps the output into a single HTML file for static hosting if desired (interactive code will not run).
+10. Save the current state of an interactive document as it is running: particularly, any console or html/visual outputs.
 
 ## Interactive Code Blocks
 
@@ -51,6 +52,7 @@ stand alone.
 6. _env_ can be `browser` or `server`, defaults to browser, specifies where the code will be run.
 7. _output_ if provided, neptune will create an empty div with the given value as an id right after the code block.
 This div can be used by the code block to display custom HTML output.
+8. _offline_ if set to false, neptune will not allow running this code block in offline mode (i.e. dumped HTML or saved documents).
 
 ### Important Pitfalls for Interactive Code Blocks
 

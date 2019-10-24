@@ -40,6 +40,11 @@ const toolbarClick = function () {
       break;
 
     case 'play':
+      if ((options['offline'] === 'false' || options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
+        alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
+        break;
+      }
+
       outputPanel.reset();
       if (options['language'] === 'javascript') {
         if (options['env'] === 'server') {

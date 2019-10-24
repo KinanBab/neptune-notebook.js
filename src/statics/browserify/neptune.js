@@ -1,6 +1,7 @@
 (function () {
   const Tabs = require('./tabs.js');
   const Inject = require('./inject.js');
+  document.getElementById('neptune-download').onclick = require('./download.js');
 
   const outputIDs = []; // stores all reserved output <div> IDs
 
