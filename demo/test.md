@@ -25,7 +25,7 @@ x = 5;
 Console.log(x);
 ```
 
-```neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2]
+```neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2,offline=false]
 var y = 2;
 Console.log(y);
 document.getElementById('myOutput2').innerHTML = '<b>Hello!</b>';

@@ -212,6 +212,7 @@ module.exports = function (preTag, codeTag) {
     // result
     const options = Object.assign({}, defaultOptions);
     const addOption = function (key, val) {
+      console.log(key, val);
       options[key] = val;
 
       if (key === 'env' && options['title'] === defaultOptions['title']) {
@@ -557,7 +558,7 @@ const toolbarClick = function () {
       break;
 
     case 'play':
-      if ((options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
+      if ((options['offline'] === 'false' || options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
         alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
         break;
       }

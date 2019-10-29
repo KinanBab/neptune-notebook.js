@@ -12738,7 +12738,7 @@ document.getElementById('myOutput').innerHTML = '&lt;h1&gt;Test&lt;/h1&gt;&lt;br
 x = 5;
 Console.log(x);
 </code></pre>
-<pre><code class="neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2] language-neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2]">var y = 2;
+<pre><code class="neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2,offline=false] language-neptune[title=Party&nbsp;2,scope=2,env=browser,frame=frame1,outputID=myOutput2,offline=false]">var y = 2;
 Console.log(y);
 document.getElementById('myOutput2').innerHTML = '&lt;b&gt;Hello!&lt;/b&gt;';
 Console.log(x);
@@ -12756,6 +12756,12 @@ Console.log('dirname', __dirname);
 }
 </code></pre>
 
+    <script type="text/javascript">
+      // injected JS
+      console.log('Compiled time injected code!');
+
+
+    </script>
     <script type="text/javascript">
       
       window.$__offline__$ = true;
@@ -12945,8 +12951,7 @@ module.exports = function (preTag, codeTag) {
 (function () {
   const Tabs = require('./tabs.js');
   const Inject = require('./inject.js');
-  const download = require('./download.js');
-  window.download__ = download;
+  document.getElementById('neptune-download').onclick = require('./download.js');
 
   const outputIDs = []; // stores all reserved output <div> IDs
 
@@ -12976,6 +12981,7 @@ module.exports = function (preTag, codeTag) {
     // result
     const options = Object.assign({}, defaultOptions);
     const addOption = function (key, val) {
+      console.log(key, val);
       options[key] = val;
 
       if (key === 'env' && options['title'] === defaultOptions['title']) {
@@ -13321,7 +13327,7 @@ const toolbarClick = function () {
       break;
 
     case 'play':
-      if ((options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
+      if ((options['offline'] === 'false' || options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
         alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
         break;
       }
@@ -13388,12 +13394,6 @@ module.exports = function () {
 };
 
 },{"./eval.js":2,"./serverExec.js":7}]},{},[5]);
-
-    </script>
-    <script type="text/javascript">
-      // injected JS
-      console.log('Compiled time injected code!');
-
 
     </script>
   </body>
