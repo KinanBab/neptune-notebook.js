@@ -1,6 +1,6 @@
 {
   "name": "neptune-notebook",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Interactive Notebook for Javascript and Node.js",
   "main": "src/neptune.js",
   "scripts": {
