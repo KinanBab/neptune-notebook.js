@@ -3,6 +3,7 @@ const Renderer = require('./render.js');
 const fs = require('fs');
 const path = require('path');
 const showdown = require('showdown');
+const fsutil = require('./fsutil.js');
 
 const converter = new showdown.Converter();
 
@@ -34,7 +35,7 @@ Document.prototype.render = function () {
 
 Document.prototype.writeHTML = function (fpath) {
   const dpath = path.dirname(fpath);
-  fs.mkdirSync(dpath, {recursive: true});
+  fsutil.mkdirp(dpath);
   fs.writeFileSync(fpath, this.renderer.render(true));
 };
 
