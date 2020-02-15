@@ -7,7 +7,9 @@ const OutputPanel = require('./outputPanel.js');
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
-  const isFirstTab = tabsContainer.children.length === 1;
+  const isFirstTab = (tabsContainer.dataset.tabCount++ === 0);
+
+  // hide the run icon if the first tab is unrunnable
   if (isFirstTab) {
     if (options.run === 'false') {
       const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
@@ -15,6 +17,13 @@ const createTab = function (title, tabsContainer, code, options) {
     }
   }
 
+  // if one or more tabs are unrunnable, hide the run all icon
+  if (options.run === 'false') {
+    const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-cogs')[0];
+    playIcon.parentNode.style.display = 'none';
+  }
+
+  // create a radio button and associated label for the tab header, and the tab body
   const tabRadio = document.createElement('input');
   const tabLabel = document.createElement('label');
   const codeTab = document.createElement('div');
@@ -110,6 +119,7 @@ const createTabsContainer = function (frameID) {
   const container = document.createElement('div');
   container.id = frameID;
   container.classList.add('code-tabs');
+  container.dataset.tabCount = 0;
   return container;
 };
 

@@ -10,11 +10,39 @@ const executeNonJavascript = function (code, language, tabID) {
   document.getElementById(tabID + '-output').innerHTML = code;
 }
 
+const playTab = function (tabID) {
+  const codeTab = document.getElementById(tabID + '-tab');
+  const outputPanel = document.getElementById(tabID + '-output');
+  const codeMirrorDiv = codeTab.getElementsByClassName('code-mirror-div')[0];
+  const codeMirrorInstance = codeMirrorDiv.codeMirrorInstance;
+
+  const options = JSON.parse(codeMirrorDiv.dataset.options);
+
+  if ((options['offline'] === 'false' || options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
+    alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
+    return;
+  }
+
+  outputPanel.reset();
+  if (options['language'] === 'javascript') {
+    if (options['env'] === 'server') {
+      serverExec(codeMirrorInstance.getValue(), options['scope'], tabID);
+    } else {
+      scopedEval(codeMirrorInstance.getValue(), options['scope'], tabID);
+    }
+  } else {
+    executeNonJavascript(codeMirrorInstance.getValue(), options['language'], tabID);
+  }
+};
+
 // handles clicking on an icon in the code toolbar
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-').slice(1).join('-');
 
   const tabID = this.parentNode.parentNode.dataset.selected;
+  const tabCount = this.parentNode.parentNode.dataset.tabCount;
+  const baseID = this.parentNode.parentNode.id;
+
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
@@ -40,20 +68,12 @@ const toolbarClick = function () {
       break;
 
     case 'play':
-      if ((options['offline'] === 'false' || options['offline'] === false || options['env'] === 'server') && window.$__offline__$) {
-        alert('Cannot execute this piece of code while offline! Please run this document locally via a neptune server..');
-        break;
-      }
+      playTab(tabID);
+      break;
 
-      outputPanel.reset();
-      if (options['language'] === 'javascript') {
-        if (options['env'] === 'server') {
-          serverExec(codeMirrorInstance.getValue(), options['scope'], tabID);
-        } else {
-          scopedEval(codeMirrorInstance.getValue(), options['scope'], tabID);
-        }
-      } else {
-        executeNonJavascript(codeMirrorInstance.getValue(), options['language'], tabID);
+    case 'cogs':
+      for (let i = 1; i <= tabCount; i++) {
+        playTab(baseID + '-tab-' + i);
       }
       break;
 
@@ -98,6 +118,7 @@ module.exports = function () {
   const element = document.createElement('span');
   element.classList.add('code-top-toolbar');
   element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
+    '<a href="javascript:void(0)"><i class="fa fa-cogs" title="Run all tabs"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
