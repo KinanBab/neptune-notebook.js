@@ -4,24 +4,26 @@ const fs = require('fs');
 const path = require('path');
 const showdown = require('showdown');
 const fsutil = require('./fsutil.js');
+const decomment = require('decomment');
 
 const converter = new showdown.Converter();
 
-function Document(title, path, injectedJS, injectedCSS, injectedHTML) {
+function Document(title, path, injectedJS, injectedCSS, injectedHTML, _decomment) {
   this.title = title;
 
   const content = fs.readFileSync(path, 'UTF8');
   this.contentHtml = converter.makeHtml(content);
 
-  const readAndConcat = function (array) {
+  const readAndConcat = function (array, _decomment=false) {
     return array.map(function (path) {
-      return fs.readFileSync(path, 'UTF8');
+      const content = fs.readFileSync(path, 'UTF8');
+      return _decomment ? decomment(content) : content;
     }).reduce(function (str, fileContent) {
       return str + fileContent + '\n';
     }, '');
   };
 
-  injectedJS = readAndConcat(injectedJS);
+  injectedJS = readAndConcat(injectedJS, _decomment);
   injectedCSS = readAndConcat(injectedCSS);
   injectedHTML = readAndConcat(injectedHTML);
 

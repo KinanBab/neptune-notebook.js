@@ -19,11 +19,11 @@ function Neptune() {
   });
 }
 
-Neptune.prototype.addDocument = function (name, path, autoRefresh=false, injectedJS=[], injectedCSS=[], injectedHTML=[]) {
+Neptune.prototype.addDocument = function (name, path, autoRefresh=false, injectedJS=[], injectedCSS=[], injectedHTML=[], decomment=true) {
   if (autoRefresh) {
-    this.documents[name] = new LazyDocument(name, path, injectedJS, injectedCSS, injectedHTML);
+    this.documents[name] = new LazyDocument(name, path, injectedJS, injectedCSS, injectedHTML, decomment);
   } else {
-    this.documents[name] = new Document(name, path, injectedJS, injectedCSS, injectedHTML);
+    this.documents[name] = new Document(name, path, injectedJS, injectedCSS, injectedHTML, decomment);
   }
 };
 
@@ -48,7 +48,7 @@ Neptune.prototype.start = function (port=80) {
     this.app.post('/document/'+name+'/__exec', function (request, response) {
       const code = request.body.code;
       const scopeName = request.body.scopeName;
-      response.json(that.executor.execute(code, scopeName));
+      response.json(that.executor.execute(code, name+'$$$$'+scopeName));
     });
   }
 

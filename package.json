@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/KinanBab/neptune-notebook.js#readme",
   "dependencies": {
+    "decomment": "^0.9.2",
     "express": "^4.17.1",
     "nunjucks": "^3.2.0",
     "path": "^0.12.7",
