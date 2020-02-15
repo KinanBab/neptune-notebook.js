@@ -16,7 +16,7 @@ const $__scopes__$ = {};
 
 // creates the function without a closure (in global scope)
 // protects the scope of this file and other neptune files from interferance from inside eval
-const $__eval__$ = function $__eval__$(Console, $__code__$) {
+const $__eval__$ = function $__eval__$(Console, require, $__code__$) {
   // Quine for scoping evals: relies on function closures to return a handler to the scope after an eval is executed!
   // Simplified fiddle to help understand why this quine is useful: https://jsfiddle.net/kjvo6h2x/
   try {
@@ -42,9 +42,24 @@ const $__logMiddlewareServer__$ = function () {
   return Console;
 }
 
+const $__requireMiddlewareServer__$ = function (require) {
+  const path = require('path');
+  const wd = process.cwd();
+
+  const Require = function (d, fromWorkingDir) {
+    if (fromWorkingDir === true) {
+      d = path.join(wd, d);
+    }
+
+    return require(d);
+  };
+  return Require;
+}
+
 // determine scope and eval within it!
 module.exports = function (code, scopeName, tabID) {
   const Console = tabID ? $__logMiddlewareBrowser__$(tabID) : $__logMiddlewareServer__$();
+  const Require = tabID ? undefined : $__requireMiddlewareServer__$(require);
 
   if (scopeName == null) {
     scopeName = '$__DEFAULT__$';
@@ -56,5 +71,5 @@ module.exports = function (code, scopeName, tabID) {
   }
 
   // eval within scope
-  $__scopes__$[scopeName] = $__scopes__$[scopeName](Console, code);
+  $__scopes__$[scopeName] = $__scopes__$[scopeName](Console, Require, code);
 };

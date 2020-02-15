@@ -1,4 +1,4 @@
-// Execute this code using in the given scope name in the server via node, and get back results!
+// Execute this code using the given scope name in the server via node, and get back results!
 module.exports = function (code, scopeName, tabID) {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', window.location.href + '/__exec');

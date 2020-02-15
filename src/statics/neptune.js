@@ -212,7 +212,6 @@ module.exports = function (preTag, codeTag) {
     // result
     const options = Object.assign({}, defaultOptions);
     const addOption = function (key, val) {
-      console.log(key, val);
       options[key] = val;
 
       if (key === 'env' && options['title'] === defaultOptions['title']) {
@@ -367,7 +366,7 @@ module.exports = function (tabID, options) {
 };
 
 },{"./formatter.js":3}],7:[function(require,module,exports){
-// Execute this code using in the given scope name in the server via node, and get back results!
+// Execute this code using the given scope name in the server via node, and get back results!
 module.exports = function (code, scopeName, tabID) {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', window.location.href + '/__exec');
