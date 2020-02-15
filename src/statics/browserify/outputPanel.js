@@ -1,6 +1,6 @@
 const formatter = require('./formatter.js');
 
-function lineHeader () {
+function lineHeader() {
   const user = this.dataset.user;
   const host = this.dataset.host;
   return '<span class="output-line-span">[' + user + '@' + host + '] $</span> | ';

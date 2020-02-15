@@ -46,11 +46,8 @@ const toolbarClick = function () {
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
-  const outputPanel = document.getElementById(tabID + '-output');
   const codeMirrorDiv = codeTab.getElementsByClassName('code-mirror-div')[0];
   const codeMirrorInstance = codeMirrorDiv.codeMirrorInstance;
-
-  const options = JSON.parse(codeMirrorDiv.dataset.options);
 
   let range;
   switch (type) {

@@ -1,6 +1,4 @@
-/*
- * dependencies
- */
+/* global CodeMirror */
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 

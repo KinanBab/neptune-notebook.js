@@ -491,6 +491,8 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],3:[function(require,module,exports){
+/* global saveAs */
+
 // Exports a document to an HTML page with all outputs and interactions stored (minus scopes)
 const markup = document.documentElement.innerHTML;
 
@@ -516,16 +518,16 @@ const getAllOutputs = function () {
 const fillOutputs = function (outputs) {
   const defaultOutputs = outputs.defaultPanels;
   const customOutputs = outputs.customPanels;
-  
+
   for (let key in defaultOutputs) {
-    if (defaultOutputs.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (customOutputs.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
@@ -540,15 +542,14 @@ const genCode = function (outputs) {
 };
 
 module.exports = function () {
-  const suffix = "\n<script type='text/javascipt'>window.$__offline__$ = true;<" + "/script>\n";
-  const content = "<html>\n" + markup + genCode(getAllOutputs()) + "<" + "/html>";
+  const content = '<html>\n' + markup + genCode(getAllOutputs()) + '<' + '/html>';
 
   const blob = new Blob([content], {type: 'text/javascript;charset=utf-8'});
   saveAs(blob, 'output.html');
 };
 
 },{}],4:[function(require,module,exports){
-(function (process,global){
+(function (global){
 /*
  * Handles scoped evaluation of user code.
  * Uses eval within function closures to isolate the different scope and persist eval variables
@@ -567,7 +568,7 @@ const $__scopes__$ = {};
 
 // creates the function without a closure (in global scope)
 // protects the scope of this file and other neptune files from interferance from inside eval
-const $__eval__$ = function $__eval__$(Console, require, $__code__$) {
+const $__eval__$ = function $__eval__$(Console, Require, $__code__$) {
   // Quine for scoping evals: relies on function closures to return a handler to the scope after an eval is executed!
   // Simplified fiddle to help understand why this quine is useful: https://jsfiddle.net/kjvo6h2x/
   try {
@@ -593,16 +594,10 @@ const $__logMiddlewareServer__$ = function () {
   return Console;
 }
 
-const $__requireMiddlewareServer__$ = function (require) {
+const $__requireMiddlewareServer__$ = function () {
   const path = require('path');
-  const wd = process.cwd();
-
-  const Require = function (d, fromWorkingDir) {
-    if (fromWorkingDir === true) {
-      d = path.join(wd, d);
-    }
-
-    return require(d);
+  const Require = function (d) {
+    return require(path.join(require.main.path, d));
   };
   return Require;
 }
@@ -610,7 +605,7 @@ const $__requireMiddlewareServer__$ = function (require) {
 // determine scope and eval within it!
 module.exports = function (code, scopeName, tabID) {
   const Console = tabID ? $__logMiddlewareBrowser__$(tabID) : $__logMiddlewareServer__$();
-  const Require = tabID ? undefined : $__requireMiddlewareServer__$(require);
+  const Require = tabID ? undefined : $__requireMiddlewareServer__$();
 
   if (scopeName == null) {
     scopeName = '$__DEFAULT__$';
@@ -625,8 +620,8 @@ module.exports = function (code, scopeName, tabID) {
   $__scopes__$[scopeName] = $__scopes__$[scopeName](Console, Require, code);
 };
 
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":2,"path":1}],5:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"path":1}],5:[function(require,module,exports){
 // format arguments as if console.log
 module.exports = function () {
   let msg = '';
@@ -785,7 +780,7 @@ module.exports = function (preTag, codeTag) {
 },{"./download.js":3,"./inject.js":6,"./tabs.js":10}],8:[function(require,module,exports){
 const formatter = require('./formatter.js');
 
-function lineHeader () {
+function lineHeader() {
   const user = this.dataset.user;
   const host = this.dataset.host;
   return '<span class="output-line-span">[' + user + '@' + host + '] $</span> | ';
@@ -890,9 +885,7 @@ module.exports = function (code, scopeName, tabID) {
 };
 
 },{}],10:[function(require,module,exports){
-/*
- * dependencies
- */
+/* global CodeMirror */
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 
@@ -1092,11 +1085,8 @@ const toolbarClick = function () {
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
-  const outputPanel = document.getElementById(tabID + '-output');
   const codeMirrorDiv = codeTab.getElementsByClassName('code-mirror-div')[0];
   const codeMirrorInstance = codeMirrorDiv.codeMirrorInstance;
-
-  const options = JSON.parse(codeMirrorDiv.dataset.options);
 
   let range;
   switch (type) {

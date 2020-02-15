@@ -1,3 +1,4 @@
 **/node_modules/
-src/statics/prism.js
+src/statics/codemirror/**/*.js
+src/statics/filesaver/**/*.js
 src/statics/neptune.js

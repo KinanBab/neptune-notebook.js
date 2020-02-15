@@ -1,3 +1,5 @@
+/* global saveAs */
+
 // Exports a document to an HTML page with all outputs and interactions stored (minus scopes)
 const markup = document.documentElement.innerHTML;
 
@@ -23,16 +25,16 @@ const getAllOutputs = function () {
 const fillOutputs = function (outputs) {
   const defaultOutputs = outputs.defaultPanels;
   const customOutputs = outputs.customPanels;
-  
+
   for (let key in defaultOutputs) {
-    if (defaultOutputs.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (customOutputs.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
@@ -47,8 +49,7 @@ const genCode = function (outputs) {
 };
 
 module.exports = function () {
-  const suffix = "\n<script type='text/javascipt'>window.$__offline__$ = true;<" + "/script>\n";
-  const content = "<html>\n" + markup + genCode(getAllOutputs()) + "<" + "/html>";
+  const content = '<html>\n' + markup + genCode(getAllOutputs()) + '<' + '/html>';
 
   const blob = new Blob([content], {type: 'text/javascript;charset=utf-8'});
   saveAs(blob, 'output.html');

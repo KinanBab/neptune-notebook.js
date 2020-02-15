@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require("fs");
+const fs = require('fs');
 
 // equivalent to `$ mkdir -p`
 // or `fs.mkdirSync(path, {recursive: true});`
