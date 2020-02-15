@@ -62,6 +62,7 @@ const toolbarClick = function () {
       tabLabel.classList.remove('tab-label-selected');
       this.children[0].classList.remove('fa-arrow-up');
       this.children[0].classList.add('fa-arrow-down');
+      this.children[0].title = 'Show tab';
       break;
 
     case 'arrow-down':
@@ -69,11 +70,13 @@ const toolbarClick = function () {
       tabLabel.classList.add('tab-label-selected');
       this.children[0].classList.remove('fa-arrow-down');
       this.children[0].classList.add('fa-arrow-up');
+      this.children[0].title = 'Hide tab';
       break;
 
     case 'eye-slash':
       this.children[0].classList.remove('fa-eye-slash');
       this.children[0].classList.add('fa-eye');
+      this.children[0].title = 'Show output';
       Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.hide();
       });
@@ -82,6 +85,7 @@ const toolbarClick = function () {
     case 'eye':
       this.children[0].classList.remove('fa-eye');
       this.children[0].classList.add('fa-eye-slash');
+      this.children[0].title = 'Hide output';
       Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.unhide();
       });
@@ -93,11 +97,11 @@ const toolbarClick = function () {
 module.exports = function () {
   const element = document.createElement('span');
   element.classList.add('code-top-toolbar');
-  element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play"></i></a>' +
-    '<a href="javascript:void(0)"><i class="fa fa-copy"></i></a>' +
-    '<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>' +
-    '<a href="javascript:void(0)"><i class="fa fa-eye-slash"></i></a>' +
-    '<a href="javascript:void(0)"><i class="fa fa-arrow-up"></i></a>';
+  element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
+    '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
+    '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
+    '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
+    '<a href="javascript:void(0)"><i class="fa fa-arrow-up" title="Hide tab"></i></a>';
 
   Array.from(element.children).map(function (aTag) {
     aTag.onclick = toolbarClick;

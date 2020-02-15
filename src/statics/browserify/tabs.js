@@ -7,6 +7,14 @@ const OutputPanel = require('./outputPanel.js');
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
+  const isFirstTab = tabsContainer.children.length === 1;
+  if (isFirstTab) {
+    if (options.run === 'false') {
+      const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
+      playIcon.parentNode.style.display = 'none';
+    }
+  }
+
   const tabRadio = document.createElement('input');
   const tabLabel = document.createElement('label');
   const codeTab = document.createElement('div');
@@ -66,6 +74,10 @@ const createTab = function (title, tabsContainer, code, options) {
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
+    minimizeIcon.title = 'Hide output';
+    // show/hide play icon if needed
+    const playIcon = topToolbar.getElementsByClassName('fa-play')[0];
+    playIcon.parentNode.style.display = options.run === 'false' ? 'none' : 'inline';
     // refresh code mirror
     editorDiv.codeMirrorInstance.refresh();
   };
