@@ -25,8 +25,8 @@ module.exports = function () {
       // Object, use JSON
       msg += JSON.stringify(arguments[i]) + ' ';
     } else {
-      // Primitive type, use toString
-      msg += arguments[i].toString() + ' ';
+      // Primitive type, concat to string
+      msg += arguments[i] + ' ';
     }
   }
 

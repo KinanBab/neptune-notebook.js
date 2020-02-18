@@ -45,7 +45,8 @@ const $__logMiddlewareServer__$ = function () {
 const $__requireMiddlewareServer__$ = function () {
   const path = require('path');
   const Require = function (d) {
-    return require(path.join(require.main.path, d));
+    const mainPath = path.dirname(require.main.filename);
+    return require(path.join(mainPath, d));
   };
   return Require;
 }
