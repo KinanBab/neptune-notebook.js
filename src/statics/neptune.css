@@ -9,7 +9,7 @@ body {
   padding: 50px;
 }
 
-/* Bar on top for downloading and stuff */
+/* Bar on top of the page for downloading */
 #neptune-bar {
   /* style */
   background: #ffffff;
@@ -20,7 +20,6 @@ body {
   position: relative;
   text-align: center;
 }
-
 #neptune-bar span {
   /* layout */
   position: absolute;
@@ -30,7 +29,6 @@ body {
   /* font */
   font-size: 8px;
 }
-
 #neptune-download {
   /* layout */
   display: block;
@@ -44,19 +42,100 @@ body {
   /* style */
   cursor: pointer;
 }
-
 #neptune-download:hover {
   background: #2B2B2B;
   color: #FFFFFF;
 }
 
 /*
+ * Code editor
+ * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ */
+.CodeMirror {
+  /* layout */
+  overflow: hidden;
+  height: auto;
+  min-height: 40px;
+
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.CodeMirror-scroll {
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.CodeMirror-linenumbers {
+  margin-right: 15px;
+}
+
+/*
+ * Toolbar with icons
+ * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
+ */
+.code-toolbar-container {
+  position: relative;
+} 
+.code-toolbar {
+  position: absolute;
+  top: 13px;
+  right: 0;
+}
+.code-toolbar a {
+  text-align: center;
+  padding: 14px;
+  transition: all 0.3s ease;
+  color:  #FFFFFF;
+  background-color: #2B2B2B;
+  font-size: 30px;
+  z-index: 2;
+}
+.code-toolbar a:first-child,
+.code-toolbar a:first-child[style*="display: none"] + a:not([style*="display: none"]),
+.code-toolbar a:first-child[style*="display: none"] + a[style*="display: none"] + a:not([style*="display: none"]) {
+  border-radius: 10px 0 0 0;
+}
+.code-toolbar a:last-child {
+  border-radius: 0 10px 0 0;
+}
+.code-toolbar a:hover {
+  background-color: #e5e5e5;
+  color: #333333;
+}
+.code-toolbar .navicon {
+  display: none;
+}
+
+/*
+ * output terminal like panel
+ */
+.output-panel {
+  /* layout */
+  display: none;
+  margin: .5em 0;
+  padding: 1em;
+  /* colors */
+  background-color: #2B2B2B;
+  color: #ccc;
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+.output-line-span {
+  color: #999;
+}
+
+/*
  * Tabs layout
+ * Includes styling for the tabs and their headers/labels
  * https://kyusuf.com/post/completely-css-tabs/
  */
 .code-tabs {
   /* box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3); */
-  padding: 30px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
   background: #e5e5e5;
   overflow: hidden;
   border: dashed 1px #333333;
@@ -67,9 +146,9 @@ body {
   opacity: 0;
 }
 .tab-label {
+  display: inline-block;
   border-radius: 10px 10px 0 0;
-  width: 100%;
-  padding: 20px 30px;
+  padding: 20px 20px;
   background: #e5e5e5;
   cursor: pointer;
   font-weight: bold;
@@ -94,78 +173,36 @@ body {
 }
 
 /*
- * Code editor
- * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ * Tabs layout when labels/headers do not fit!
+ * https://www.w3schools.com/howto/howto_js_responsive_navbar_dropdown.asp
  */
-.CodeMirror {
-  /* layout */
-  overflow: hidden;
-  height: auto;
-  min-height: 40px;
-
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1em;
-  line-height: 1.5;
+@media screen and (max-width: 1200px) {
+  .code-toolbar-container:not(.toosmall) label[class="tab-label"] {
+    display: none;
+  }
+  .code-toolbar-container:not(.toosmall) .navicon {
+    display: inline;
+  }
 }
-.CodeMirror-scroll {
-  height: auto;
-  overflow-y: hidden;
-  overflow-x: auto;
-}
-
-.CodeMirror-linenumbers {
-  margin-right: 15px;
-}
-
-/*
- * bar with execute button 
- * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
- */
-.code-top-toolbar {
-  float: right;
-  position: relative;
-  top: -10px;
-  padding: 0;
-}
-
-.code-top-toolbar a {
-  text-align: center;
-  padding: 10px;
-  transition: all 0.3s ease;
-  color: #333333;
-  font-size: 30px;
-  z-index: 2;
-}
-
-.code-top-toolbar a:hover {
-  background-color: #2B2B2B;
-  color: #FFFFFF;
-}
-
-/*
- * output terminal like panel
- */
-.output-panel {
-  /* layout */
+.code-toolbar-container.toobig label:not(.tab-label-selected) {
   display: none;
-  margin: .5em 0;
-  padding: 1em;
-  /* colors */
-  background-color: #2B2B2B;
-  color: #ccc;
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1.2em;
-  line-height: 1.5;
+}
+.code-toolbar-container.toobig .navicon {
+  display: inline;
 }
 
-.output-line-span {
-  color: #999;
+.code-toolbar-container.responsive .tab-label {
+  display: inline-block !important;
+  border-radius: 0;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  width: 100%;
+}
+.code-toolbar-container.responsive .tab-label:nth-child(2) {
+  border-top: 1px solid #000000;
+  border-radius: 10px 10px 0 0;
 }
 
-/*
- * Custom output divs
- */
-.custom-output-div {
+.code-toolbar-container.responsive .tab-label:last-child {
+  border-bottom: 1px solid #000000;
 }

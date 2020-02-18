@@ -54,6 +54,10 @@ stand alone.
 This div can be used by the code block to display custom HTML output.
 8. _offline_ if set to false, neptune will not allow running this code block in offline mode (i.e. dumped HTML or saved documents).
 9. _run_ if set to false, neptune will not allow this code block to run, and will not display a run icon near it.
+10. _dropdown_ if set to true, neptune will not display all of the tab headers of the blocks in the frame, instead it will show a bars icon
+that displays a drop down menu from which a tab can be chosen when clicked, if set to false, tab headers will always be displayed and
+there will be no drop down menu. If this is not set, neptune will automatically determine whether to use a drop down menu or not, depending
+on the size of the tab headers and the width of the screen.
 
 ### Important Pitfalls for Interactive Code Blocks
 

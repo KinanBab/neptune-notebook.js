@@ -27,14 +27,14 @@ const fillOutputs = function (outputs) {
   const customOutputs = outputs.customPanels;
 
   for (let key in defaultOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }

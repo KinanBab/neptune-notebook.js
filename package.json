@@ -1,8 +1,12 @@
 {
   "name": "neptune-notebook",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Interactive Notebook for Javascript and Node.js",
   "main": "src/neptune.js",
+  "files": [
+    "src/**",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint -c .eslint.json .",

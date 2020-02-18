@@ -520,14 +520,14 @@ const fillOutputs = function (outputs) {
   const customOutputs = outputs.customPanels;
 
   for (let key in defaultOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
@@ -889,23 +889,27 @@ module.exports = function (code, scopeName, tabID) {
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 
+const specialRegex = new RegExp('&[^;]*;', 'g');
+
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
-  const isFirstTab = (tabsContainer.dataset.tabCount++ === 0);
+  const tabsToolbarContainer = tabsContainer.children[0];
+  const count = parseInt(tabsContainer.dataset.tabCount);
+  tabsContainer.dataset.tabCount = count+1;
 
   // hide the run icon if the first tab is unrunnable
-  if (isFirstTab) {
+  if (count === 0) {
     if (options.run === 'false') {
-      const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
+      const playIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-play')[0];
       playIcon.parentNode.style.display = 'none';
     }
   }
 
   // if one or more tabs are unrunnable, hide the run all icon
   if (options.run === 'false') {
-    const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-cogs')[0];
-    playIcon.parentNode.style.display = 'none';
+    const cogsIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-cogs')[0];
+    cogsIcon.parentNode.style.display = 'none';
   }
 
   // create a radio button and associated label for the tab header, and the tab body
@@ -914,7 +918,6 @@ const createTab = function (title, tabsContainer, code, options) {
   const codeTab = document.createElement('div');
 
   // create ID for radio
-  const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
 
   // Code mirror HTML elements
@@ -960,11 +963,12 @@ const createTab = function (title, tabsContainer, code, options) {
     const lastVal = tabsContainer.dataset.selected;
     const prevLabel = document.getElementById(lastVal + '-label');
     prevLabel.classList.remove('tab-label-selected');
+    prevLabel.classList.remove('tab-label-visible');
     // select this label
     tabsContainer.dataset.selected = tabID;
     tabLabel.classList.add('tab-label-selected');
     // unminize icon if needed
-    const topToolbar = tabsContainer.getElementsByClassName('code-top-toolbar')[0];
+    const topToolbar = tabsContainer.getElementsByClassName('code-toolbar')[0];
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
@@ -972,6 +976,8 @@ const createTab = function (title, tabsContainer, code, options) {
     // show/hide play icon if needed
     const playIcon = topToolbar.getElementsByClassName('fa-play')[0];
     playIcon.parentNode.style.display = options.run === 'false' ? 'none' : 'inline';
+    // hide drop-down nav bar for the labels if visible
+    tabsToolbarContainer.classList.remove('responsive');
     // refresh code mirror
     editorDiv.codeMirrorInstance.refresh();
   };
@@ -995,9 +1001,24 @@ const createTab = function (title, tabsContainer, code, options) {
   }
 
   // add the code container to the tabs
-  tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
+  tabsToolbarContainer.appendChild(tabLabel);
   tabsContainer.appendChild(tabRadio);
   tabsContainer.appendChild(codeTab);
+
+  // if the size and number of tab headers/labels is too much
+  // change style to make them navigatable via a drop down menu
+  // 13 * 4
+  const sizeEstimate = Array.from(tabsToolbarContainer.getElementsByTagName('label')).reduce(function (acc, labelTag) {
+    let text = labelTag.textContent;
+    text = text.replace(specialRegex, '_');
+    return acc + 4 + text.length;
+  }, 0);
+
+  if (options['dropdown'] === 'false') {
+    tabsToolbarContainer.classList.add('toosmall');
+  } else if (sizeEstimate > 70 || options['dropdown'] === 'true') {
+    tabsToolbarContainer.classList.add('toobig');
+  }
 };
 
 const createTabsContainer = function (frameID) {
@@ -1005,6 +1026,11 @@ const createTabsContainer = function (frameID) {
   container.id = frameID;
   container.classList.add('code-tabs');
   container.dataset.tabCount = 0;
+
+  const tabsToolbarContainer = document.createElement('div');
+  tabsToolbarContainer.classList.add('code-toolbar-container');
+  container.appendChild(tabsToolbarContainer);
+
   return container;
 };
 
@@ -1015,7 +1041,7 @@ const getOrCreateTabsContainer = function (frameID, preTag) {
   if (container == null) {
     container = createTabsContainer(frameID);
     preTag.parentNode.replaceChild(container, preTag);
-    container.appendChild(Toolbar());
+    container.children[0].appendChild(Toolbar());
   } else {
     preTag.parentNode.removeChild(preTag);
   }
@@ -1078,10 +1104,11 @@ const playTab = function (tabID) {
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-').slice(1).join('-');
 
-  const tabID = this.parentNode.parentNode.dataset.selected;
-  const tabCount = this.parentNode.parentNode.dataset.tabCount;
-  const baseID = this.parentNode.parentNode.id;
+  const tabID = this.parentNode.parentNode.parentNode.dataset.selected;
+  const tabCount = this.parentNode.parentNode.parentNode.dataset.tabCount;
+  const baseID = this.parentNode.parentNode.parentNode.id;
 
+  const toolbarContainer = this.parentNode.parentNode;
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
@@ -1116,6 +1143,7 @@ const toolbarClick = function () {
     case 'arrow-up':
       tabRadio.checked = false;
       tabLabel.classList.remove('tab-label-selected');
+      tabLabel.classList.add('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-up');
       this.children[0].classList.add('fa-arrow-down');
       this.children[0].title = 'Show tab';
@@ -1124,6 +1152,7 @@ const toolbarClick = function () {
     case 'arrow-down':
       tabRadio.checked = true;
       tabLabel.classList.add('tab-label-selected');
+      tabLabel.classList.remove('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-down');
       this.children[0].classList.add('fa-arrow-up');
       this.children[0].title = 'Hide tab';
@@ -1133,7 +1162,7 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye-slash');
       this.children[0].classList.add('fa-eye');
       this.children[0].title = 'Show output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.hide();
       });
       break;
@@ -1142,9 +1171,17 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye');
       this.children[0].classList.add('fa-eye-slash');
       this.children[0].title = 'Hide output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.unhide();
       });
+      break;
+
+    case 'bars':
+      if (toolbarContainer.classList.contains('responsive')) {
+        toolbarContainer.classList.remove('responsive');
+      } else {
+        toolbarContainer.classList.add('responsive');
+      }
       break;
   }
 };
@@ -1152,12 +1189,13 @@ const toolbarClick = function () {
 // creates HTML elements for the toolbar on top of <code> tags
 module.exports = function () {
   const element = document.createElement('span');
-  element.classList.add('code-top-toolbar');
+  element.classList.add('code-toolbar');
   element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-cogs" title="Run all tabs"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
+    '<a href="javascript:void(0)" class="navicon"><i class="fa fa-bars" title="Select tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-arrow-up" title="Hide tab"></i></a>';
 
   Array.from(element.children).map(function (aTag) {

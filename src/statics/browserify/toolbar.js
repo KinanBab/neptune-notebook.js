@@ -39,10 +39,11 @@ const playTab = function (tabID) {
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-').slice(1).join('-');
 
-  const tabID = this.parentNode.parentNode.dataset.selected;
-  const tabCount = this.parentNode.parentNode.dataset.tabCount;
-  const baseID = this.parentNode.parentNode.id;
+  const tabID = this.parentNode.parentNode.parentNode.dataset.selected;
+  const tabCount = this.parentNode.parentNode.parentNode.dataset.tabCount;
+  const baseID = this.parentNode.parentNode.parentNode.id;
 
+  const toolbarContainer = this.parentNode.parentNode;
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
@@ -77,6 +78,7 @@ const toolbarClick = function () {
     case 'arrow-up':
       tabRadio.checked = false;
       tabLabel.classList.remove('tab-label-selected');
+      tabLabel.classList.add('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-up');
       this.children[0].classList.add('fa-arrow-down');
       this.children[0].title = 'Show tab';
@@ -85,6 +87,7 @@ const toolbarClick = function () {
     case 'arrow-down':
       tabRadio.checked = true;
       tabLabel.classList.add('tab-label-selected');
+      tabLabel.classList.remove('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-down');
       this.children[0].classList.add('fa-arrow-up');
       this.children[0].title = 'Hide tab';
@@ -94,7 +97,7 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye-slash');
       this.children[0].classList.add('fa-eye');
       this.children[0].title = 'Show output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.hide();
       });
       break;
@@ -103,9 +106,17 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye');
       this.children[0].classList.add('fa-eye-slash');
       this.children[0].title = 'Hide output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.unhide();
       });
+      break;
+
+    case 'bars':
+      if (toolbarContainer.classList.contains('responsive')) {
+        toolbarContainer.classList.remove('responsive');
+      } else {
+        toolbarContainer.classList.add('responsive');
+      }
       break;
   }
 };
@@ -113,12 +124,13 @@ const toolbarClick = function () {
 // creates HTML elements for the toolbar on top of <code> tags
 module.exports = function () {
   const element = document.createElement('span');
-  element.classList.add('code-top-toolbar');
+  element.classList.add('code-toolbar');
   element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-cogs" title="Run all tabs"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
+    '<a href="javascript:void(0)" class="navicon"><i class="fa fa-bars" title="Select tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-arrow-up" title="Hide tab"></i></a>';
 
   Array.from(element.children).map(function (aTag) {

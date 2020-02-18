@@ -2,23 +2,27 @@
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 
+const specialRegex = new RegExp('&[^;]*;', 'g');
+
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
-  const isFirstTab = (tabsContainer.dataset.tabCount++ === 0);
+  const tabsToolbarContainer = tabsContainer.children[0];
+  const count = parseInt(tabsContainer.dataset.tabCount);
+  tabsContainer.dataset.tabCount = count+1;
 
   // hide the run icon if the first tab is unrunnable
-  if (isFirstTab) {
+  if (count === 0) {
     if (options.run === 'false') {
-      const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
+      const playIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-play')[0];
       playIcon.parentNode.style.display = 'none';
     }
   }
 
   // if one or more tabs are unrunnable, hide the run all icon
   if (options.run === 'false') {
-    const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-cogs')[0];
-    playIcon.parentNode.style.display = 'none';
+    const cogsIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-cogs')[0];
+    cogsIcon.parentNode.style.display = 'none';
   }
 
   // create a radio button and associated label for the tab header, and the tab body
@@ -27,7 +31,6 @@ const createTab = function (title, tabsContainer, code, options) {
   const codeTab = document.createElement('div');
 
   // create ID for radio
-  const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
 
   // Code mirror HTML elements
@@ -73,11 +76,12 @@ const createTab = function (title, tabsContainer, code, options) {
     const lastVal = tabsContainer.dataset.selected;
     const prevLabel = document.getElementById(lastVal + '-label');
     prevLabel.classList.remove('tab-label-selected');
+    prevLabel.classList.remove('tab-label-visible');
     // select this label
     tabsContainer.dataset.selected = tabID;
     tabLabel.classList.add('tab-label-selected');
     // unminize icon if needed
-    const topToolbar = tabsContainer.getElementsByClassName('code-top-toolbar')[0];
+    const topToolbar = tabsContainer.getElementsByClassName('code-toolbar')[0];
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
@@ -85,6 +89,8 @@ const createTab = function (title, tabsContainer, code, options) {
     // show/hide play icon if needed
     const playIcon = topToolbar.getElementsByClassName('fa-play')[0];
     playIcon.parentNode.style.display = options.run === 'false' ? 'none' : 'inline';
+    // hide drop-down nav bar for the labels if visible
+    tabsToolbarContainer.classList.remove('responsive');
     // refresh code mirror
     editorDiv.codeMirrorInstance.refresh();
   };
@@ -108,9 +114,24 @@ const createTab = function (title, tabsContainer, code, options) {
   }
 
   // add the code container to the tabs
-  tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
+  tabsToolbarContainer.appendChild(tabLabel);
   tabsContainer.appendChild(tabRadio);
   tabsContainer.appendChild(codeTab);
+
+  // if the size and number of tab headers/labels is too much
+  // change style to make them navigatable via a drop down menu
+  // 13 * 4
+  const sizeEstimate = Array.from(tabsToolbarContainer.getElementsByTagName('label')).reduce(function (acc, labelTag) {
+    let text = labelTag.textContent;
+    text = text.replace(specialRegex, '_');
+    return acc + 4 + text.length;
+  }, 0);
+
+  if (options['dropdown'] === 'false') {
+    tabsToolbarContainer.classList.add('toosmall');
+  } else if (sizeEstimate > 70 || options['dropdown'] === 'true') {
+    tabsToolbarContainer.classList.add('toobig');
+  }
 };
 
 const createTabsContainer = function (frameID) {
@@ -118,6 +139,11 @@ const createTabsContainer = function (frameID) {
   container.id = frameID;
   container.classList.add('code-tabs');
   container.dataset.tabCount = 0;
+
+  const tabsToolbarContainer = document.createElement('div');
+  tabsToolbarContainer.classList.add('code-toolbar-container');
+  container.appendChild(tabsToolbarContainer);
+
   return container;
 };
 
@@ -128,7 +154,7 @@ const getOrCreateTabsContainer = function (frameID, preTag) {
   if (container == null) {
     container = createTabsContainer(frameID);
     preTag.parentNode.replaceChild(container, preTag);
-    container.appendChild(Toolbar());
+    container.children[0].appendChild(Toolbar());
   } else {
     preTag.parentNode.removeChild(preTag);
   }

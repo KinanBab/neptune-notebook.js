@@ -12541,7 +12541,7 @@ body {
   padding: 50px;
 }
 
-/* Bar on top for downloading and stuff */
+/* Bar on top of the page for downloading */
 #neptune-bar {
   /* style */
   background: #ffffff;
@@ -12552,7 +12552,6 @@ body {
   position: relative;
   text-align: center;
 }
-
 #neptune-bar span {
   /* layout */
   position: absolute;
@@ -12562,7 +12561,6 @@ body {
   /* font */
   font-size: 8px;
 }
-
 #neptune-download {
   /* layout */
   display: block;
@@ -12576,19 +12574,100 @@ body {
   /* style */
   cursor: pointer;
 }
-
 #neptune-download:hover {
   background: #2B2B2B;
   color: #FFFFFF;
 }
 
 /*
+ * Code editor
+ * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ */
+.CodeMirror {
+  /* layout */
+  overflow: hidden;
+  height: auto;
+  min-height: 40px;
+
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.CodeMirror-scroll {
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.CodeMirror-linenumbers {
+  margin-right: 15px;
+}
+
+/*
+ * Toolbar with icons
+ * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
+ */
+.code-toolbar-container {
+  position: relative;
+} 
+.code-toolbar {
+  position: absolute;
+  top: 13px;
+  right: 0;
+}
+.code-toolbar a {
+  text-align: center;
+  padding: 14px;
+  transition: all 0.3s ease;
+  color:  #FFFFFF;
+  background-color: #2B2B2B;
+  font-size: 30px;
+  z-index: 2;
+}
+.code-toolbar a:first-child,
+.code-toolbar a:first-child[style*="display: none"] + a:not([style*="display: none"]),
+.code-toolbar a:first-child[style*="display: none"] + a[style*="display: none"] + a:not([style*="display: none"]) {
+  border-radius: 10px 0 0 0;
+}
+.code-toolbar a:last-child {
+  border-radius: 0 10px 0 0;
+}
+.code-toolbar a:hover {
+  background-color: #e5e5e5;
+  color: #333333;
+}
+.code-toolbar .navicon {
+  display: none;
+}
+
+/*
+ * output terminal like panel
+ */
+.output-panel {
+  /* layout */
+  display: none;
+  margin: .5em 0;
+  padding: 1em;
+  /* colors */
+  background-color: #2B2B2B;
+  color: #ccc;
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+.output-line-span {
+  color: #999;
+}
+
+/*
  * Tabs layout
+ * Includes styling for the tabs and their headers/labels
  * https://kyusuf.com/post/completely-css-tabs/
  */
 .code-tabs {
   /* box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3); */
-  padding: 30px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
   background: #e5e5e5;
   overflow: hidden;
   border: dashed 1px #333333;
@@ -12599,9 +12678,9 @@ body {
   opacity: 0;
 }
 .tab-label {
+  display: inline-block;
   border-radius: 10px 10px 0 0;
-  width: 100%;
-  padding: 20px 30px;
+  padding: 20px 20px;
   background: #e5e5e5;
   cursor: pointer;
   font-weight: bold;
@@ -12626,80 +12705,38 @@ body {
 }
 
 /*
- * Code editor
- * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ * Tabs layout when labels/headers do not fit!
+ * https://www.w3schools.com/howto/howto_js_responsive_navbar_dropdown.asp
  */
-.CodeMirror {
-  /* layout */
-  overflow: hidden;
-  height: auto;
-  min-height: 40px;
-
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1em;
-  line-height: 1.5;
+@media screen and (max-width: 1200px) {
+  .code-toolbar-container:not(.toosmall) label[class="tab-label"] {
+    display: none;
+  }
+  .code-toolbar-container:not(.toosmall) .navicon {
+    display: inline;
+  }
 }
-.CodeMirror-scroll {
-  height: auto;
-  overflow-y: hidden;
-  overflow-x: auto;
-}
-
-.CodeMirror-linenumbers {
-  margin-right: 15px;
-}
-
-/*
- * bar with execute button 
- * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
- */
-.code-top-toolbar {
-  float: right;
-  position: relative;
-  top: -10px;
-  padding: 0;
-}
-
-.code-top-toolbar a {
-  text-align: center;
-  padding: 10px;
-  transition: all 0.3s ease;
-  color: #333333;
-  font-size: 30px;
-  z-index: 2;
-}
-
-.code-top-toolbar a:hover {
-  background-color: #2B2B2B;
-  color: #FFFFFF;
-}
-
-/*
- * output terminal like panel
- */
-.output-panel {
-  /* layout */
+.code-toolbar-container.toobig label:not(.tab-label-selected) {
   display: none;
-  margin: .5em 0;
-  padding: 1em;
-  /* colors */
-  background-color: #2B2B2B;
-  color: #ccc;
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1.2em;
-  line-height: 1.5;
+}
+.code-toolbar-container.toobig .navicon {
+  display: inline;
 }
 
-.output-line-span {
-  color: #999;
+.code-toolbar-container.responsive .tab-label {
+  display: inline-block !important;
+  border-radius: 0;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  width: 100%;
+}
+.code-toolbar-container.responsive .tab-label:nth-child(2) {
+  border-top: 1px solid #000000;
+  border-radius: 10px 10px 0 0;
 }
 
-/*
- * Custom output divs
- */
-.custom-output-div {
+.code-toolbar-container.responsive .tab-label:last-child {
+  border-bottom: 1px solid #000000;
 }
 
     </style>
@@ -12759,7 +12796,7 @@ Console.log(fs.mkdir.toString().split('\n')[0]);
 <pre><code class="neptune[inject=true,language=HTML] language-neptune[inject=true,language=HTML]">&lt;h3&gt; Some more injected code! &lt;/h3&gt;
 </code></pre>
 <h2 id="someothercode">Some other code</h2>
-<pre><code class="neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML] language-neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML]">&lt;h1 class="my-test"&gt;Test this HTML!&lt;/h1&gt;
+<pre><code class="neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML,dropdown=false] language-neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML,dropdown=false]">&lt;h1 class="my-test"&gt;Test this HTML!&lt;/h1&gt;
 </code></pre>
 <pre><code class="neptune[title=CSS,frame=frame2,language=CSS] language-neptune[title=CSS,frame=frame2,language=CSS]">.my-test {
   color: red;
@@ -12779,7 +12816,7 @@ Console.log(fs.mkdir.toString().split('\n')[0]);
 
     <script type="text/javascript">
       // injected JS
-      console.log('Compiled time injected code!');
+      console.log('Build time injected code!');
 
 
     </script>
@@ -13310,14 +13347,14 @@ const fillOutputs = function (outputs) {
   const customOutputs = outputs.customPanels;
 
   for (let key in defaultOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
@@ -13679,23 +13716,27 @@ module.exports = function (code, scopeName, tabID) {
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 
+const specialRegex = new RegExp('&[^;]*;', 'g');
+
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
-  const isFirstTab = (tabsContainer.dataset.tabCount++ === 0);
+  const tabsToolbarContainer = tabsContainer.children[0];
+  const count = parseInt(tabsContainer.dataset.tabCount);
+  tabsContainer.dataset.tabCount = count+1;
 
   // hide the run icon if the first tab is unrunnable
-  if (isFirstTab) {
+  if (count === 0) {
     if (options.run === 'false') {
-      const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
+      const playIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-play')[0];
       playIcon.parentNode.style.display = 'none';
     }
   }
 
   // if one or more tabs are unrunnable, hide the run all icon
   if (options.run === 'false') {
-    const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-cogs')[0];
-    playIcon.parentNode.style.display = 'none';
+    const cogsIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-cogs')[0];
+    cogsIcon.parentNode.style.display = 'none';
   }
 
   // create a radio button and associated label for the tab header, and the tab body
@@ -13704,7 +13745,6 @@ const createTab = function (title, tabsContainer, code, options) {
   const codeTab = document.createElement('div');
 
   // create ID for radio
-  const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
 
   // Code mirror HTML elements
@@ -13750,11 +13790,12 @@ const createTab = function (title, tabsContainer, code, options) {
     const lastVal = tabsContainer.dataset.selected;
     const prevLabel = document.getElementById(lastVal + '-label');
     prevLabel.classList.remove('tab-label-selected');
+    prevLabel.classList.remove('tab-label-visible');
     // select this label
     tabsContainer.dataset.selected = tabID;
     tabLabel.classList.add('tab-label-selected');
     // unminize icon if needed
-    const topToolbar = tabsContainer.getElementsByClassName('code-top-toolbar')[0];
+    const topToolbar = tabsContainer.getElementsByClassName('code-toolbar')[0];
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
@@ -13762,6 +13803,8 @@ const createTab = function (title, tabsContainer, code, options) {
     // show/hide play icon if needed
     const playIcon = topToolbar.getElementsByClassName('fa-play')[0];
     playIcon.parentNode.style.display = options.run === 'false' ? 'none' : 'inline';
+    // hide drop-down nav bar for the labels if visible
+    tabsToolbarContainer.classList.remove('responsive');
     // refresh code mirror
     editorDiv.codeMirrorInstance.refresh();
   };
@@ -13785,9 +13828,24 @@ const createTab = function (title, tabsContainer, code, options) {
   }
 
   // add the code container to the tabs
-  tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
+  tabsToolbarContainer.appendChild(tabLabel);
   tabsContainer.appendChild(tabRadio);
   tabsContainer.appendChild(codeTab);
+
+  // if the size and number of tab headers/labels is too much
+  // change style to make them navigatable via a drop down menu
+  // 13 * 4
+  const sizeEstimate = Array.from(tabsToolbarContainer.getElementsByTagName('label')).reduce(function (acc, labelTag) {
+    let text = labelTag.textContent;
+    text = text.replace(specialRegex, '_');
+    return acc + 4 + text.length;
+  }, 0);
+
+  if (options['dropdown'] === 'false') {
+    tabsToolbarContainer.classList.add('toosmall');
+  } else if (sizeEstimate > 70 || options['dropdown'] === 'true') {
+    tabsToolbarContainer.classList.add('toobig');
+  }
 };
 
 const createTabsContainer = function (frameID) {
@@ -13795,6 +13853,11 @@ const createTabsContainer = function (frameID) {
   container.id = frameID;
   container.classList.add('code-tabs');
   container.dataset.tabCount = 0;
+
+  const tabsToolbarContainer = document.createElement('div');
+  tabsToolbarContainer.classList.add('code-toolbar-container');
+  container.appendChild(tabsToolbarContainer);
+
   return container;
 };
 
@@ -13805,7 +13868,7 @@ const getOrCreateTabsContainer = function (frameID, preTag) {
   if (container == null) {
     container = createTabsContainer(frameID);
     preTag.parentNode.replaceChild(container, preTag);
-    container.appendChild(Toolbar());
+    container.children[0].appendChild(Toolbar());
   } else {
     preTag.parentNode.removeChild(preTag);
   }
@@ -13868,10 +13931,11 @@ const playTab = function (tabID) {
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-').slice(1).join('-');
 
-  const tabID = this.parentNode.parentNode.dataset.selected;
-  const tabCount = this.parentNode.parentNode.dataset.tabCount;
-  const baseID = this.parentNode.parentNode.id;
+  const tabID = this.parentNode.parentNode.parentNode.dataset.selected;
+  const tabCount = this.parentNode.parentNode.parentNode.dataset.tabCount;
+  const baseID = this.parentNode.parentNode.parentNode.id;
 
+  const toolbarContainer = this.parentNode.parentNode;
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
@@ -13906,6 +13970,7 @@ const toolbarClick = function () {
     case 'arrow-up':
       tabRadio.checked = false;
       tabLabel.classList.remove('tab-label-selected');
+      tabLabel.classList.add('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-up');
       this.children[0].classList.add('fa-arrow-down');
       this.children[0].title = 'Show tab';
@@ -13914,6 +13979,7 @@ const toolbarClick = function () {
     case 'arrow-down':
       tabRadio.checked = true;
       tabLabel.classList.add('tab-label-selected');
+      tabLabel.classList.remove('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-down');
       this.children[0].classList.add('fa-arrow-up');
       this.children[0].title = 'Hide tab';
@@ -13923,7 +13989,7 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye-slash');
       this.children[0].classList.add('fa-eye');
       this.children[0].title = 'Show output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.hide();
       });
       break;
@@ -13932,9 +13998,17 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye');
       this.children[0].classList.add('fa-eye-slash');
       this.children[0].title = 'Hide output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.unhide();
       });
+      break;
+
+    case 'bars':
+      if (toolbarContainer.classList.contains('responsive')) {
+        toolbarContainer.classList.remove('responsive');
+      } else {
+        toolbarContainer.classList.add('responsive');
+      }
       break;
   }
 };
@@ -13942,12 +14016,13 @@ const toolbarClick = function () {
 // creates HTML elements for the toolbar on top of <code> tags
 module.exports = function () {
   const element = document.createElement('span');
-  element.classList.add('code-top-toolbar');
+  element.classList.add('code-toolbar');
   element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-cogs" title="Run all tabs"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
+    '<a href="javascript:void(0)" class="navicon"><i class="fa fa-bars" title="Select tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-arrow-up" title="Hide tab"></i></a>';
 
   Array.from(element.children).map(function (aTag) {

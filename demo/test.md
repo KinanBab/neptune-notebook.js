@@ -47,7 +47,7 @@ Console.log(fs.mkdir.toString().split('\n')[0]);
 
 ## Some other code
 
-```neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML]
+```neptune[title=HTML,frame=frame2,outputID=HTMLOutput,language=HTML,dropdown=false]
 <h1 class="my-test">Test this HTML!</h1>
 ```
 

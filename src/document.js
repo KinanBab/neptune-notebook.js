@@ -21,7 +21,12 @@ function Document(title, path, injectedJS, injectedCSS, injectedHTML, _decomment
       }
 
       const content = fs.readFileSync(path, 'UTF8');
-      return _decomment ? decomment(content) : content;
+      try {
+        return _decomment ? decomment(content) : content;
+      } catch (err) {
+        console.log('decomment throw error on injected file "' + path + '", injecting with comments!');
+        return content;
+      }
     }).reduce(function (str, fileContent) {
       return str + fileContent + '\n';
     }, '');
