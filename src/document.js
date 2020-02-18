@@ -7,6 +7,7 @@ const fsutil = require('./fsutil.js');
 const decomment = require('decomment');
 
 const converter = new showdown.Converter();
+const mainPath = pathlib.dirname(require.main.filename);
 
 function Document(title, path, injectedJS, injectedCSS, injectedHTML, _decomment) {
   this.title = title;
@@ -17,7 +18,7 @@ function Document(title, path, injectedJS, injectedCSS, injectedHTML, _decomment
   const readAndConcat = function (array, _decomment=false) {
     return array.map(function (path) {
       if (!pathlib.isAbsolute(path)) {
-        path = pathlib.join(require.main.path, path);
+        path = pathlib.join(mainPath, path);
       }
 
       const content = fs.readFileSync(path, 'UTF8');
@@ -46,7 +47,7 @@ Document.prototype.render = function () {
 
 Document.prototype.writeHTML = function (fpath) {
   if (!pathlib.isAbsolute(fpath)) {
-    fpath = pathlib.join(require.main.path, fpath);
+    fpath = pathlib.join(mainPath, fpath);
   }
 
   const dpath = pathlib.dirname(fpath);
